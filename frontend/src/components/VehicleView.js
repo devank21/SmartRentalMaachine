@@ -20,7 +20,11 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
   const [prediction, setPrediction] = useState(null);
   const [date, setDate] = useState("");
 
-  useEffect(() => {
+  // State for new features
+  const [pricePrediction, setPricePrediction] = useState(null);
+  const [duration, setDuration] = useState(90); // Default duration for price prediction
+
+  const fetchVehicleData = () => {
     axios
       .get(`${API_BASE_URL}/equipment/id/${equipmentId}`)
       .then((res) => setVehicle(res.data))
@@ -28,53 +32,79 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
         console.error(`Error fetching vehicle ${equipmentId}:`, err);
         setError("Could not load vehicle details.");
       });
+  };
+
+  useEffect(() => {
+    fetchVehicleData();
   }, [equipmentId]);
 
-  const handlePrediction = () => {
+  const handleAvailabilityPrediction = () => {
     if (!date) return;
-    setPrediction(null); // Clear previous prediction
+    setPrediction(null);
     axios
       .post(`${API_BASE_URL}/predict-availability`, {
         equipmentId,
         futureDate: date,
       })
-      .then((res) => {
-        // Set the new prediction from the successful response
-        setPrediction(res.data);
-      })
-      .catch((err) => {
-        // If there's an error, set the prediction state to show the error message
-        console.error("Prediction error:", err);
-        if (err.response && err.response.data && err.response.data.error) {
-          setPrediction({ error: err.response.data.error });
-        } else {
-          setPrediction({ error: "Could not get a prediction." });
-        }
-      });
+      .then((res) => setPrediction(res.data))
+      .catch((err) =>
+        setPrediction({
+          error: err.response?.data?.error || "Could not get prediction.",
+        })
+      );
   };
 
-  // Helper to render the prediction result
-  const renderPredictionResult = () => {
-    if (!prediction) return null;
+  const handlePricePrediction = () => {
+    setPricePrediction(null);
+    axios
+      .post(`${API_BASE_URL}/predict-price`, {
+        engineHours: vehicle.EngineHours,
+        durationDays: duration,
+      })
+      .then((res) => setPricePrediction(res.data))
+      .catch((err) =>
+        setPricePrediction({
+          error: err.response?.data?.error || "Could not get price.",
+        })
+      );
+  };
 
-    if (prediction.error) {
-      return <div className="prediction-result error">{prediction.error}</div>;
-    }
+  const handleReturnVehicle = () => {
+    axios
+      .post(`${API_BASE_URL}/return-vehicle`, { equipmentId })
+      .then((res) => {
+        // Refresh the vehicle data to show its new "Available" status
+        fetchVehicleData();
+      })
+      .catch((err) => console.error("Error returning vehicle:", err));
+  };
 
-    if (prediction.available) {
+  const renderPredictionResult = (pred) => {
+    if (!pred) return null;
+    if (pred.error)
+      return <div className="prediction-result error">{pred.error}</div>;
+    if (pred.available)
       return (
         <div className="prediction-result available">
           Predicted to be AVAILABLE on {date}.
         </div>
       );
-    } else {
-      return (
-        <div className="prediction-result in-use">
-          Predicted to be IN-USE. Expected return:{" "}
-          {prediction.predictedReturnDate}.
-        </div>
-      );
-    }
+    return (
+      <div className="prediction-result in-use">
+        Predicted to be IN-USE. Expected return: {pred.predictedReturnDate}.
+      </div>
+    );
+  };
+
+  const renderPriceResult = (price) => {
+    if (!price) return null;
+    if (price.error)
+      return <div className="prediction-result error">{price.error}</div>;
+    return (
+      <div className="prediction-result success">
+        Estimated Price: ${price.predictedPrice.toLocaleString()}
+      </div>
+    );
   };
 
   if (error) return <div className="error-message">{error}</div>;
@@ -88,7 +118,15 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
       >
         &larr; Back to {vehicle.Type}
       </button>
-      <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
+      <div className="vehicle-header">
+        <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
+        {/* Early Return Button */}
+        {vehicle.Status === "In-Use" && (
+          <button className="return-button" onClick={handleReturnVehicle}>
+            Mark as Returned
+          </button>
+        )}
+      </div>
 
       <div className="vehicle-grid">
         <div className="vehicle-card map-card">
@@ -98,10 +136,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             zoom={14}
             style={{ height: "100%", width: "100%" }}
           >
-            <TileLayer
-              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-              attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-            />
+            <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[vehicle.Latitude, vehicle.Longitude]}>
               <Popup>{vehicle.EquipmentID}</Popup>
             </Marker>
@@ -114,9 +149,16 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             )}
           </MapContainer>
         </div>
-
         <div className="vehicle-card telemetry-card">
           <h3>Live Telemetry</h3>
+          <div className="telemetry-item">
+            <span>Status</span>
+            <strong>{vehicle.Status}</strong>
+          </div>
+          <div className="telemetry-item">
+            <span>Customer</span>
+            <strong>{vehicle.Customer || "N/A"}</strong>
+          </div>
           <div className="telemetry-item">
             <span>Fuel Level</span>
             <div className="progress-bar">
@@ -138,10 +180,9 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             </div>
           </div>
         </div>
-
         <div className="vehicle-card alerts-card">
           <h3>System Alerts</h3>
-          {vehicle.alerts && vehicle.alerts.length > 0 ? (
+          {vehicle.alerts?.length > 0 ? (
             <ul>
               {vehicle.alerts.map((alert, i) => (
                 <li key={i} className={`alert-${alert.level}`}>
@@ -153,7 +194,6 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             <p>No active alerts.</p>
           )}
         </div>
-
         <div className="vehicle-card prediction-card">
           <h3>Predict Availability</h3>
           <p>Check if this machine will be free for a future date.</p>
@@ -163,9 +203,23 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
               value={date}
               onChange={(e) => setDate(e.target.value)}
             />
-            <button onClick={handlePrediction}>Check</button>
+            <button onClick={handleAvailabilityPrediction}>Check</button>
           </div>
-          {renderPredictionResult()}
+          {renderPredictionResult(prediction)}
+        </div>
+        <div className="vehicle-card prediction-card">
+          <h3>Dynamic Price Estimation</h3>
+          <p>Estimate the rental price based on usage and duration.</p>
+          <div className="prediction-controls">
+            <label>Rental Duration (days):</label>
+            <input
+              type="number"
+              value={duration}
+              onChange={(e) => setDuration(e.target.value)}
+            />
+            <button onClick={handlePricePrediction}>Predict Price</button>
+          </div>
+          {renderPriceResult(pricePrediction)}
         </div>
       </div>
     </div>

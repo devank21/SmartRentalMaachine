@@ -2,7 +2,8 @@ import React, { useState } from "react";
 import Dashboard from "./components/Dashboard";
 import CategoryView from "./components/CategoryView";
 import VehicleView from "./components/VehicleView";
-import SustainabilityView from "./components/SustainabilityView"; // Import the new component
+import SustainabilityView from "./components/SustainabilityView";
+import BimView from "./components/BimView"; // Import the new BIM component
 import "./App.css";
 
 function App() {
@@ -18,8 +19,10 @@ function App() {
         return <CategoryView {...view.props} navigateTo={navigateTo} />;
       case "vehicle":
         return <VehicleView {...view.props} navigateTo={navigateTo} />;
-      case "sustainability": // Add the new view case
+      case "sustainability":
         return <SustainabilityView navigateTo={navigateTo} />;
+      case "bim": // Add the new BIM view case
+        return <BimView navigateTo={navigateTo} />;
       case "dashboard":
       default:
         return <Dashboard navigateTo={navigateTo} />;
@@ -33,10 +36,11 @@ function App() {
           CAT
         </div>
         <h1>Smart Fleet Command Center</h1>
-        {/* Add a navigation link to the new page */}
         <nav className="main-nav">
           <a onClick={() => navigateTo("dashboard")}>Dashboard</a>
           <a onClick={() => navigateTo("sustainability")}>Sustainability</a>
+          <a onClick={() => navigateTo("bim")}>BIM Viewer</a>{" "}
+          {/* Add the new nav link */}
         </nav>
       </header>
       <main className="main-content">{renderView()}</main>
