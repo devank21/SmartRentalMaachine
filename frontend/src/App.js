@@ -107,13 +107,20 @@ function App() {
 
 // --- Dashboard View ---
 const DashboardView = ({ navigateTo }) => {
-  const [summary, setSummary] = useState(null);
+  const [summary, setSummary] = useState([]);
   const [error, setError] = useState("");
 
   useEffect(() => {
     axios
       .get(`${API_BASE_URL}/summary`)
-      .then((res) => setSummary(res.data))
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setSummary(res.data);
+        } else {
+          console.error("API did not return an array for summary:", res.data);
+          setError("Received invalid data format from the server.");
+        }
+      })
       .catch((err) => {
         console.error(err);
         setError("Could not load dashboard summary. Is the backend running?");
@@ -121,19 +128,19 @@ const DashboardView = ({ navigateTo }) => {
   }, []);
 
   if (error) return <div className="error-message">{error}</div>;
-  if (!summary)
+  if (summary.length === 0)
     return <div className="loading-message">Loading Dashboard...</div>;
 
   return (
     <div className="dashboard-grid">
-      {Object.entries(summary).map(([category, statuses]) => (
+      {summary.map(({ category, statuses }) => (
         <div
           key={category}
           className="summary-card"
           onClick={() => navigateTo("category", { category })}
         >
           <h2>{category}</h2>
-          <p className="total-count">{statuses.Total} Total Units</p>
+          <p className="total-count">{statuses.Total || 0} Total Units</p>
           <div className="status-breakdown">
             <div className="status-item available">
               {statuses.Available || 0} <span>Available</span>
