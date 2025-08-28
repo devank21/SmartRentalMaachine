@@ -50,13 +50,33 @@ body {
   padding: 0.5rem 1.2rem;
   cursor: pointer;
   margin-right: 2rem;
-  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); /* Angled edge */
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%);
 }
 
 .app-header h1 {
   margin: 0;
   font-size: 1.5rem;
   font-weight: normal;
+  flex-grow: 1; /* Allows nav to push to the right */
+}
+
+.main-nav {
+  display: flex;
+  gap: 1.5rem;
+}
+
+.main-nav a {
+  color: var(--text-color);
+  text-decoration: none;
+  cursor: pointer;
+  padding: 0.5rem 0;
+  border-bottom: 2px solid transparent;
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.main-nav a:hover {
+  color: var(--secondary-color);
+  border-bottom-color: var(--secondary-color);
 }
 
 .main-content {
@@ -225,6 +245,11 @@ tbody tr:hover {
   font-weight: bold;
 }
 
+.prediction-result.error {
+  background-color: #442020;
+  color: #ffacac;
+}
+
 /* --- Reused from previous --- */
 .status-breakdown {
   display: flex;
@@ -261,9 +286,9 @@ tbody tr:hover {
 .status-badge.status-available {
   background-color: var(--status-available);
 }
-.status-badge.status-in-use {
+.status-badge.status-inuse {
   background-color: var(--status-in-use);
-}
+} /* Corrected class name */
 .status-badge.status-maintenance {
   background-color: var(--status-maintenance);
 }
@@ -321,4 +346,40 @@ tbody tr:hover {
   padding: 2rem;
   font-style: italic;
   color: #7f8c8d;
+}
+
+/* --- NEW STYLES FOR FILTER --- */
+.category-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.filter-controls {
+  display: flex;
+  gap: 0.5rem;
+  background-color: #2c2c2c;
+  padding: 0.5rem;
+  border-radius: 8px;
+}
+
+.filter-controls button {
+  background: none;
+  border: none;
+  color: var(--text-color);
+  padding: 0.5rem 1rem;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background-color 0.2s, color 0.2s;
+}
+
+.filter-controls button:hover {
+  background-color: #444;
+}
+
+.filter-controls button.active {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
 }

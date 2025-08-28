@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
 import "leaflet/dist/leaflet.css";
 import L from "leaflet";
 
-// --- Leaflet Icon Fix ---
+// Leaflet Icon Fix
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -32,13 +32,49 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
 
   const handlePrediction = () => {
     if (!date) return;
+    setPrediction(null); // Clear previous prediction
     axios
       .post(`${API_BASE_URL}/predict-availability`, {
         equipmentId,
         futureDate: date,
       })
-      .then((res) => setPrediction(res.data))
-      .catch((err) => console.error("Prediction error:", err));
+      .then((res) => {
+        // Set the new prediction from the successful response
+        setPrediction(res.data);
+      })
+      .catch((err) => {
+        // If there's an error, set the prediction state to show the error message
+        console.error("Prediction error:", err);
+        if (err.response && err.response.data && err.response.data.error) {
+          setPrediction({ error: err.response.data.error });
+        } else {
+          setPrediction({ error: "Could not get a prediction." });
+        }
+      });
+  };
+
+  // Helper to render the prediction result
+  const renderPredictionResult = () => {
+    if (!prediction) return null;
+
+    if (prediction.error) {
+      return <div className="prediction-result error">{prediction.error}</div>;
+    }
+
+    if (prediction.available) {
+      return (
+        <div className="prediction-result available">
+          Predicted to be AVAILABLE on {date}.
+        </div>
+      );
+    } else {
+      return (
+        <div className="prediction-result in-use">
+          Predicted to be IN-USE. Expected return:{" "}
+          {prediction.predictedReturnDate}.
+        </div>
+      );
+    }
   };
 
   if (error) return <div className="error-message">{error}</div>;
@@ -48,9 +84,9 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
     <div className="view-container">
       <button
         className="back-button"
-        onClick={() => navigateTo("category", { category })}
+        onClick={() => navigateTo("category", { category: vehicle.Type })}
       >
-        &larr; Back to {category}
+        &larr; Back to {vehicle.Type}
       </button>
       <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
 
@@ -72,7 +108,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             {vehicle.JobSiteLat && vehicle.JobSiteLon && (
               <Circle
                 center={[vehicle.JobSiteLat, vehicle.JobSiteLon]}
-                radius={vehicle.JobSiteRadius * 1000} // Convert km to meters
+                radius={vehicle.JobSiteRadius * 1000}
                 pathOptions={{ color: "green", fillColor: "green" }}
               />
             )}
@@ -129,17 +165,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             />
             <button onClick={handlePrediction}>Check</button>
           </div>
-          {prediction && (
-            <div
-              className={`prediction-result ${
-                prediction.available ? "available" : "in-use"
-              }`}
-            >
-              {prediction.available
-                ? `Predicted to be AVAILABLE on ${date}.`
-                : `Predicted to be IN-USE. Expected return: ${prediction.predictedReturnDate}.`}
-            </div>
-          )}
+          {renderPredictionResult()}
         </div>
       </div>
     </div>
