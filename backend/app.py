@@ -108,12 +108,9 @@ def generate_alerts(vehicle):
 def get_summary():
     if df.empty: return jsonify({"error": "Dataset not loaded"}), 500
     try:
-        # FIX: The previous method was creating a structure that was difficult for the frontend to parse.
-        # This revised method creates a clean list of objects, which is a standard and easy-to-use format.
         summary_df = df.groupby('Type')['Status'].value_counts().unstack(fill_value=0)
         summary_df['Total'] = summary_df.sum(axis=1)
         
-        # Convert DataFrame to a list of dictionaries
         summary_list = []
         for index, row in summary_df.iterrows():
             summary_item = {
@@ -122,7 +119,8 @@ def get_summary():
             }
             summary_list.append(summary_item)
             
-        return jsonify(summary_list)
+        # FIX: Explicitly create a dictionary with a 'data' key
+        return jsonify({'data': summary_list})
     except Exception as e:
         print(f"Error in /api/summary: {e}")
         traceback.print_exc()
@@ -135,7 +133,9 @@ def get_equipment_by_type(type_name):
         data = df[df['Type'] == type_name].copy()
         data['RentalStartDate'] = data['RentalStartDate'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else None)
         data['ExpectedReturnDate'] = data['ExpectedReturnDate'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else None)
-        return jsonify(data.to_dict(orient='records'))
+        
+        # FIX: Explicitly create a dictionary with a 'data' key
+        return jsonify({'data': data.to_dict(orient='records')})
     except Exception as e:
         print(f"Error in /api/equipment/type/{type_name}: {e}")
         return jsonify({"error": f"Could not retrieve data for {type_name}"}), 500

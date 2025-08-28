@@ -1,38 +1,324 @@
-.App {
-  text-align: center;
+/* --- Global Styles (Caterpillar Dark Theme) --- */
+:root {
+  --primary-color: #000000; /* Black */
+  --secondary-color: #ffcd00; /* Caterpillar Yellow */
+  --background-color: #000000; /* Black Background */
+  --card-bg-color: #1e1e1e; /* Dark Gray for cards */
+  --text-color: #e0e0e0; /* Light Gray for text */
+  --header-bg-color: #1a1a1a;
+  --border-color: #333333; /* Darker Gray for borders */
+  --shadow: 0 4px 8px rgba(0, 0, 0, 0.4);
+
+  --status-available: #27ae60;
+  --status-in-use: #f39c12;
+  --status-maintenance: #c0392b;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto", "Oxygen",
+    "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: var(--background-color);
+  color: var(--text-color);
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
-}
-
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
+/* --- App Layout --- */
+.app-container {
   display: flex;
   flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: var(--header-bg-color);
+  color: white;
+  padding: 0.5rem 2rem;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
+  border-bottom: 3px solid var(--secondary-color);
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
+}
+
+.logo {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  font-weight: bold;
+  font-size: 1.8rem;
+  padding: 0.5rem 1.2rem;
+  cursor: pointer;
+  margin-right: 2rem;
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 0% 100%); /* Angled edge */
+}
+
+.app-header h1 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: normal;
+}
+
+.main-content {
+  flex-grow: 1;
+  padding: 2rem;
+}
+
+/* --- Dashboard View --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.summary-card {
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+  border: 1px solid var(--border-color);
+}
+
+.summary-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.5);
+  border-color: var(--secondary-color);
+}
+
+.summary-card h2 {
+  margin-top: 0;
+  color: var(--secondary-color);
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+
+.total-count {
+  font-size: 1.2rem;
+  font-weight: bold;
+  color: var(--text-color);
+}
+
+/* --- Detail & Vehicle Views --- */
+.view-container {
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.back-button {
+  background-color: var(--card-bg-color);
+  color: var(--secondary-color);
+  border: 1px solid var(--secondary-color);
+  border-radius: 5px;
+  padding: 0.5rem 1rem;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  transition: background-color 0.2s, color 0.2s;
+  font-weight: bold;
+}
+
+.back-button:hover {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+}
+
+/* Table Styles */
+.table-wrapper {
+  overflow-x: auto;
+  background-color: var(--card-bg-color);
+  box-shadow: var(--shadow);
+  border-radius: 8px;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+th,
+td {
+  padding: 1rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border-color);
+}
+
+th {
+  background-color: #2c2c2c;
+  color: var(--secondary-color);
+  font-weight: bold;
+}
+
+tbody tr {
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+tbody tr:hover {
+  background-color: #2a2a2a;
+}
+
+/* --- Vehicle Detail Grid --- */
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.5rem;
+  margin-top: 1.5rem;
+}
+
+.vehicle-card {
+  background-color: var(--card-bg-color);
+  border-radius: 8px;
+  padding: 1.5rem;
+  box-shadow: var(--shadow);
+}
+
+.vehicle-card h3 {
+  margin-top: 0;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  color: var(--secondary-color);
+}
+
+.map-card {
+  grid-column: 1 / -1;
+  height: 400px;
+  border: 1px solid var(--border-color);
+}
+
+.leaflet-tile-pane {
+  filter: invert(1) brightness(0.7) contrast(1.1); /* Dark mode for map tiles */
+}
+
+/* Telemetry & Alerts */
+.progress-bar {
+  width: 60%;
+  background-color: #333;
+  border-radius: 5px;
+  overflow: hidden;
+  border: 1px solid var(--border-color);
+}
+.progress-bar div {
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  padding: 0.2rem 0.5rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+/* Prediction Card */
+.prediction-controls input {
+  flex-grow: 1;
+  padding: 0.5rem;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  background-color: #333;
   color: white;
 }
-
-.App-link {
-  color: #61dafb;
+.prediction-controls button {
+  padding: 0.5rem 1rem;
+  background-color: var(--secondary-color);
+  color: var(--primary-color);
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-weight: bold;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+/* --- Reused from previous --- */
+.status-breakdown {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 1rem;
+}
+.status-item {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+.status-item span {
+  display: block;
+  font-size: 0.8rem;
+  font-weight: normal;
+  color: #999;
+}
+.status-item.available {
+  color: var(--status-available);
+}
+.status-item.in-use {
+  color: var(--status-in-use);
+}
+.status-item.maintenance {
+  color: var(--status-maintenance);
+}
+.status-badge {
+  padding: 0.25rem 0.6rem;
+  border-radius: 12px;
+  color: white;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+.status-badge.status-available {
+  background-color: var(--status-available);
+}
+.status-badge.status-in-use {
+  background-color: var(--status-in-use);
+}
+.status-badge.status-maintenance {
+  background-color: var(--status-maintenance);
+}
+.telemetry-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+.alerts-card ul {
+  list-style: none;
+  padding: 0;
+}
+.alerts-card li {
+  padding: 0.5rem;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+}
+.alert-critical {
+  background-color: #c0392b;
+  color: white;
+}
+.alert-warning {
+  background-color: #f39c12;
+  color: #1e1e1e;
+  font-weight: bold;
+}
+.prediction-controls {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+.prediction-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  font-weight: bold;
+}
+.prediction-result.available {
+  background-color: #27ae60;
+  color: white;
+}
+.prediction-result.in-use {
+  background-color: #c0392b;
+  color: white;
+}
+.error-message {
+  color: var(--status-maintenance);
+  font-weight: bold;
+  text-align: center;
+  padding: 2rem;
+}
+.loading {
+  text-align: center;
+  padding: 2rem;
+  font-style: italic;
+  color: #7f8c8d;
 }
