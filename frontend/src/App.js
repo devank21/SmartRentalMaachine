@@ -3,7 +3,8 @@ import Dashboard from "./components/Dashboard";
 import CategoryView from "./components/CategoryView";
 import VehicleView from "./components/VehicleView";
 import SustainabilityView from "./components/SustainabilityView";
-import BimView from "./components/BimView"; // Import the new BIM component
+import BimView from "./components/BimView";
+import DemandForecastView from "./components/DemandForecastView"; // Import the new component
 import "./App.css";
 
 function App() {
@@ -21,8 +22,10 @@ function App() {
         return <VehicleView {...view.props} navigateTo={navigateTo} />;
       case "sustainability":
         return <SustainabilityView navigateTo={navigateTo} />;
-      case "bim": // Add the new BIM view case
+      case "bim":
         return <BimView navigateTo={navigateTo} />;
+      case "demand-forecast": // Add the new view case
+        return <DemandForecastView navigateTo={navigateTo} />;
       case "dashboard":
       default:
         return <Dashboard navigateTo={navigateTo} />;
@@ -39,7 +42,10 @@ function App() {
         <nav className="main-nav">
           <a onClick={() => navigateTo("dashboard")}>Dashboard</a>
           <a onClick={() => navigateTo("sustainability")}>Sustainability</a>
-          <a onClick={() => navigateTo("bim")}>BIM Viewer</a>{" "}
+          <a onClick={() => navigateTo("bim")}>BIM Viewer</a>
+          <a onClick={() => navigateTo("demand-forecast")}>
+            Demand Forecast
+          </a>{" "}
           {/* Add the new nav link */}
         </nav>
       </header>

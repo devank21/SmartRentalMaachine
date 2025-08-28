@@ -135,19 +135,71 @@ def get_equipment_by_id(equipment_id):
         return jsonify({"error": "Could not retrieve vehicle details"}), 500
 
 @app.route('/api/predict-availability', methods=['POST'])
+@app.route('/api/predict-availability', methods=['POST'])
 def predict_availability():
-    if not is_availability_model_trained: return jsonify({"error": "Availability model not trained."}), 503
     try:
         data = request.json
-        vehicle = df[df['EquipmentID'] == data['equipmentId']].iloc[0]
-        if vehicle['Status'] == 'Available': return jsonify({"available": True, "predictedReturnDate": "Now"})
-        if pd.isna(vehicle['RentalStartDate']): return jsonify({"error": "No rental start date."}), 422
-        duration = availability_model.predict(vehicle[['EngineHours']])[0]
-        predicted_return = vehicle['RentalStartDate'] + timedelta(days=int(duration))
-        return jsonify({"available": datetime.strptime(data['futureDate'], '%Y-%m-%d') > predicted_return, "predictedReturnDate": predicted_return.strftime('%Y-%m-%d')})
+        print("Incoming data:", data)
+
+        # Handle multiple date formats and strip whitespace
+        try:
+            date_str = data['futureDate'].strip()
+            future_date = None
+            for fmt in ['%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d']:
+                try:
+                    future_date = datetime.strptime(date_str, fmt)
+                    break
+                except ValueError:
+                    continue
+            if future_date is None:
+                return jsonify({"error": f"Invalid date format. Got '{date_str}', expected DD-MM-YYYY"}), 400
+        except Exception:
+            return jsonify({"error": "Invalid date format."}), 400
+
+        # Get the vehicle details
+        vehicle_data = df[df['EquipmentID'] == data['equipmentId']]
+        if vehicle_data.empty:
+            return jsonify({"error": "Equipment not found"}), 404
+
+        vehicle = vehicle_data.iloc[0]
+        print("Selected vehicle:", vehicle.to_dict())
+
+        # If machine is already available now
+        if vehicle['Status'] == 'Available':
+            return jsonify({"available": True, "predictedReturnDate": "Now"})
+
+        # If no RentalStartDate
+        if pd.isna(vehicle['RentalStartDate']):
+            return jsonify({"error": "No rental start date."}), 422
+
+        # Predict using trained model if available
+        predicted_return = None
+        if is_availability_model_trained and not pd.isna(vehicle['EngineHours']):
+            try:
+                duration = availability_model.predict([[vehicle['EngineHours']]])[0]
+                predicted_return = vehicle['RentalStartDate'] + timedelta(days=int(duration))
+            except Exception as e:
+                print("Model prediction error:", e)
+
+        # Fallback logic: ExpectedReturnDate → Average duration
+        if predicted_return is None:
+            if not pd.isna(vehicle['ExpectedReturnDate']):
+                predicted_return = vehicle['ExpectedReturnDate']
+            else:
+                avg_duration = (df['ExpectedReturnDate'] - df['RentalStartDate']).dt.days.mean()
+                predicted_return = vehicle['RentalStartDate'] + timedelta(days=int(avg_duration))
+
+        # Compare future date with predicted return date
+        available = future_date > predicted_return
+
+        return jsonify({
+            "available": bool(available),
+            "predictedReturnDate": predicted_return.strftime('%Y-%m-%d')
+        })
+
     except Exception as e:
         traceback.print_exc()
-        return jsonify({"error": "Error during availability prediction."}), 500
+        return jsonify({"error": f"Error during availability prediction: {str(e)}"}), 500
 
 @app.route('/api/sustainability/report', methods=['GET'])
 def get_sustainability_report():
