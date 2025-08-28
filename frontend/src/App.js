@@ -1,130 +1,224 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { Line } from "react-chartjs-2";
 
-// NOTE: The leaflet (map) imports were removed as they were not being used in the current UI
-// and were causing compilation errors.
-import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler,
-} from "chart.js";
+/*
+  =====================================================================================
+  =====================================================================================
+  ======                                                                         ======
+  ======    STOP: A CRITICAL STEP IS REQUIRED TO FIX THE COMPILATION ERROR       ======
+  ======                                                                         ======
+  =====================================================================================
+  =====================================================================================
+  
+  The "Could not resolve 'react-leaflet'" error means essential software packages
+  are missing from your project. The code itself is correct, but it cannot find
+  the libraries it needs to run.
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
+  To fix this, you MUST install these packages from your terminal.
 
-// --- Main App Component ---
+  --- FOLLOW THESE 5 STEPS EXACTLY ---
+
+  1. Open your computer's terminal or command prompt.
+
+  2. Navigate into your project's `frontend` folder.
+     Example: cd path/to/your/SmartRentalSystem/frontend
+
+  3. If the React server is running, stop it by pressing CTRL+C.
+
+  4. Run this precise command. It will download and install everything needed.
+     Copy and paste it to avoid typos:
+
+     npm install axios leaflet react-leaflet
+
+  5. After the installation is complete, restart the server:
+
+     npm start
+
+  This will permanently resolve the error. The application will not work
+  until this command is run successfully.
+
+  =====================================================================================
+*/
+
+import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import L from "leaflet";
+
+// --- Leaflet Icon Fix ---
+import iconUrl from "leaflet/dist/images/marker-icon.png";
+import iconRetinaUrl from "leaflet/dist/images/marker-icon-2x.png";
+import shadowUrl from "leaflet/dist/images/marker-shadow.png";
+
+const DefaultIcon = L.icon({
+  iconUrl,
+  iconRetinaUrl,
+  shadowUrl,
+  iconSize: [25, 41],
+  iconAnchor: [12, 41],
+  popupAnchor: [1, -34],
+  shadowSize: [41, 41],
+});
+L.Marker.prototype.options.icon = DefaultIcon;
+
+// --- API Configuration ---
+const API_BASE_URL = "http://127.0.0.1:5000/api";
+
+// --- Main App Component (Router) ---
 function App() {
-  const [equipmentData, setEquipmentData] = useState([]);
-  const [selectedEquipment, setSelectedEquipment] = useState(null);
-  const [error, setError] = useState(null);
-  const API_BASE_URL = "http://127.0.0.1:5000/api";
+  const [view, setView] = useState({ name: "dashboard" });
 
-  useEffect(() => {
-    axios
-      .get(`${API_BASE_URL}/equipment`)
-      .then((response) => {
-        setEquipmentData(response.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching equipment data:", err);
-        setError(
-          "Could not load equipment data. Is the backend server running?"
-        );
-      });
-  }, []);
-
-  const handleSelectEquipment = (equipment) => {
-    setSelectedEquipment(equipment);
+  const navigateTo = (viewName, props = {}) => {
+    setView({ name: viewName, ...props });
   };
 
-  const handleBackToList = () => {
-    setSelectedEquipment(null);
+  const renderView = () => {
+    switch (view.name) {
+      case "category":
+        return (
+          <CategoryDetailView
+            category={view.category}
+            navigateTo={navigateTo}
+          />
+        );
+      case "vehicle":
+        return (
+          <VehicleDetailView
+            equipmentId={view.equipmentId}
+            navigateTo={navigateTo}
+          />
+        );
+      default:
+        return <DashboardView navigateTo={navigateTo} />;
+    }
   };
 
   return (
     <div className="app-container">
       <header className="app-header">
-        <div className="logo">CAT</div>
+        <div className="logo" onClick={() => navigateTo("dashboard")}>
+          CAT
+        </div>
         <h1>Smart Fleet Command Center</h1>
       </header>
-      <main className="main-content">
-        {error ? (
-          <div className="error-message-full-page">{error}</div>
-        ) : selectedEquipment ? (
-          <EquipmentDetail
-            equipment={selectedEquipment}
-            onBack={handleBackToList}
-            apiBaseUrl={API_BASE_URL}
-          />
-        ) : (
-          <EquipmentTable
-            equipment={equipmentData}
-            onSelect={handleSelectEquipment}
-          />
-        )}
-      </main>
+      <main className="main-content">{renderView()}</main>
     </div>
   );
 }
 
-// --- EquipmentTable (Full Page List) ---
-const EquipmentTable = ({ equipment, onSelect }) => {
+// --- Dashboard View ---
+const DashboardView = ({ navigateTo }) => {
+  const [summary, setSummary] = useState(null);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}/summary`)
+      .then((res) => setSummary(res.data))
+      .catch((err) => {
+        console.error(err);
+        setError("Could not load dashboard summary. Is the backend running?");
+      });
+  }, []);
+
+  if (error) return <div className="error-message">{error}</div>;
+  if (!summary)
+    return <div className="loading-message">Loading Dashboard...</div>;
+
   return (
-    <div className="table-container-full-page">
-      <div className="card-header">
-        <h2>Master Equipment List</h2>
-        <p>Click on any asset to view its detailed forecast and history.</p>
-      </div>
+    <div className="dashboard-grid">
+      {Object.entries(summary).map(([category, statuses]) => (
+        <div
+          key={category}
+          className="summary-card"
+          onClick={() => navigateTo("category", { category })}
+        >
+          <h2>{category}</h2>
+          <p className="total-count">{statuses.Total} Total Units</p>
+          <div className="status-breakdown">
+            <div className="status-item available">
+              {statuses.Available || 0} <span>Available</span>
+            </div>
+            <div className="status-item in-use">
+              {statuses["In-Use"] || 0} <span>In-Use</span>
+            </div>
+            <div className="status-item maintenance">
+              {statuses.Maintenance || 0} <span>Maintenance</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+};
+
+// --- Category Detail View ---
+const CategoryDetailView = ({ category, navigateTo }) => {
+  const [equipment, setEquipment] = useState([]);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    axios
+      .get(`${API_BASE_URL}/equipment/type/${category}`)
+      .then((res) => {
+        if (Array.isArray(res.data)) {
+          setEquipment(res.data);
+        } else {
+          console.error(
+            "API did not return an array for equipment list:",
+            res.data
+          );
+          setError("Received invalid data format from the server.");
+        }
+      })
+      .catch((err) => {
+        console.error(err);
+        setError("Could not load equipment details.");
+      });
+  }, [category]);
+
+  if (error) return <div className="error-message">{error}</div>;
+
+  return (
+    <div className="detail-view-container">
+      <button className="back-button" onClick={() => navigateTo("dashboard")}>
+        &larr; Back to Dashboard
+      </button>
+      <h2>{category} Fleet Status</h2>
       <div className="table-wrapper">
         <table>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Type</th>
               <th>Status</th>
-              <th>Engine Hours</th>
-              <th>Fuel Level</th>
-              <th>Location</th>
+              <th>Rented By</th>
+              <th>Expected Return</th>
             </tr>
           </thead>
           <tbody>
-            {equipment.map((item) => {
-              const statusClass = `status-${item.Status.toLowerCase().replace(
-                " ",
-                "-"
-              )}`;
-              return (
-                <tr key={item.EquipmentID} onClick={() => onSelect(item)}>
-                  <td className="id-cell">{item.EquipmentID}</td>
-                  <td>{item.Type}</td>
-                  <td>
-                    <span className={`status-badge ${statusClass}`}>
-                      {item.Status}
-                    </span>
-                  </td>
-                  <td>{item.EngineHours}</td>
-                  <td>{item.FuelLevel}%</td>
-                  <td>{`${item.Latitude.toFixed(2)}, ${item.Longitude.toFixed(
-                    2
-                  )}`}</td>
-                </tr>
-              );
-            })}
+            {equipment.map((item) => (
+              <tr
+                key={item.EquipmentID}
+                onClick={() =>
+                  navigateTo("vehicle", { equipmentId: item.EquipmentID })
+                }
+              >
+                <td className="id-cell">{item.EquipmentID}</td>
+                <td>
+                  <span
+                    className={`status-badge status-${item.Status.toLowerCase().replace(
+                      " ",
+                      "-"
+                    )}`}
+                  >
+                    {item.Status}
+                  </span>
+                </td>
+                <td>{item.Customer || "N/A"}</td>
+                <td>
+                  {item.Status === "In-Use" ? item.ExpectedReturnDate : "N/A"}
+                </td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -132,116 +226,126 @@ const EquipmentTable = ({ equipment, onSelect }) => {
   );
 };
 
-// --- EquipmentDetail (Drill-down View) ---
-const EquipmentDetail = ({ equipment, onBack, apiBaseUrl }) => {
-  const [forecastData, setForecastData] = useState(null);
-  const [forecastError, setForecastError] = useState(null);
+// --- Vehicle Detail View ---
+const VehicleDetailView = ({ equipmentId, navigateTo }) => {
+  const [vehicle, setVehicle] = useState(null);
+  const [error, setError] = useState("");
+  const [prediction, setPrediction] = useState(null);
+  const [date, setDate] = useState("");
 
   useEffect(() => {
-    setForecastData(null); // Reset on new selection
-    setForecastError(null);
     axios
-      .get(`${apiBaseUrl}/forecast/${equipment.EquipmentID}`)
-      .then((response) => {
-        setForecastData(response.data);
-      })
+      .get(`${API_BASE_URL}/equipment/id/${equipmentId}`)
+      .then((res) => setVehicle(res.data))
       .catch((err) => {
-        console.error("Error fetching forecast data:", err);
-        setForecastError(
-          err.response?.data?.error || "Could not load forecast data."
-        );
+        console.error(err);
+        setError("Could not load vehicle details.");
       });
-  }, [equipment.EquipmentID, apiBaseUrl]);
+  }, [equipmentId]);
+
+  const handlePrediction = () => {
+    if (!date) return;
+    axios
+      .post(`${API_BASE_URL}/predict-availability`, {
+        equipmentId,
+        futureDate: date,
+      })
+      .then((res) => setPrediction(res.data))
+      .catch((err) => console.error(err));
+  };
+
+  if (error) return <div className="error-message">{error}</div>;
+  if (!vehicle)
+    return <div className="loading-message">Loading Vehicle Data...</div>;
 
   return (
-    <div className="detail-container">
-      <button onClick={onBack} className="back-button">
-        ← Back to Full List
+    <div className="detail-view-container">
+      <button
+        className="back-button"
+        onClick={() => navigateTo("category", { category: vehicle.Type })}
+      >
+        &larr; Back to {vehicle.Type}s
       </button>
-      <div className="detail-header">
-        <h2>
-          Rental Forecast:{" "}
-          <span className="detail-id">{equipment.EquipmentID}</span>
-        </h2>
-        <p>
-          {equipment.Type} - Last known status: {equipment.Status}
-        </p>
+      <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
+      <div className="vehicle-grid">
+        <div className="vehicle-card map-card">
+          <h3>Live Location & Geofence</h3>
+          <MapContainer
+            center={[vehicle.Latitude, vehicle.Longitude]}
+            zoom={13}
+            style={{ height: "100%", width: "100%" }}
+          >
+            <TileLayer url="https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png" />
+            <Marker position={[vehicle.Latitude, vehicle.Longitude]}>
+              <Popup>{vehicle.EquipmentID}</Popup>
+            </Marker>
+            <Circle
+              center={[vehicle.JobSiteLat, vehicle.JobSiteLon]}
+              radius={vehicle.JobSiteRadius * 1000}
+              color="yellow"
+              fillOpacity={0.1}
+            />
+          </MapContainer>
+        </div>
+        <div className="vehicle-card telemetry-card">
+          <h3>Live Telemetry</h3>
+          <div className="telemetry-item">
+            <span>Fuel Level</span>
+            <div className="progress-bar">
+              <div style={{ width: `${vehicle.FuelLevel}%` }}>
+                {vehicle.FuelLevel}%
+              </div>
+            </div>
+          </div>
+          <div className="telemetry-item">
+            <span>Engine Hours</span>
+            <p>{vehicle.EngineHours} hrs</p>
+          </div>
+          <div className="telemetry-item">
+            <span>Engine Load</span>
+            <div className="progress-bar">
+              <div style={{ width: `${vehicle.EngineLoad}%` }}>
+                {vehicle.EngineLoad}%
+              </div>
+            </div>
+          </div>
+        </div>
+        <div className="vehicle-card alerts-card">
+          <h3>System Alerts</h3>
+          {vehicle.alerts.length > 0 ? (
+            <ul>
+              {vehicle.alerts.map((alert, i) => (
+                <li key={i} className={`alert-${alert.level}`}>
+                  {alert.message}
+                </li>
+              ))}
+            </ul>
+          ) : (
+            <p>No active alerts.</p>
+          )}
+        </div>
+        <div className="vehicle-card prediction-card">
+          <h3>Predict Availability</h3>
+          <p>Check if this machine will be free for a future rental.</p>
+          <input
+            type="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+          />
+          <button onClick={handlePrediction}>Check</button>
+          {prediction && (
+            <div
+              className={`prediction-result ${
+                prediction.available ? "available" : "in-use"
+              }`}
+            >
+              {prediction.available
+                ? `YES, available on ${date}.`
+                : `NO, predicted return is ${prediction.predictedReturnDate}.`}
+            </div>
+          )}
+        </div>
       </div>
-      <div className="chart-container">
-        {forecastError ? (
-          <div className="loading-message error-message">{forecastError}</div>
-        ) : forecastData ? (
-          <ForecastChart data={forecastData} />
-        ) : (
-          <div className="loading-message">Generating forecast...</div>
-        )}
-      </div>
-    </div>
-  );
-};
-
-// --- ForecastChart Component (reusable) ---
-const ForecastChart = ({ data }) => {
-  const chartData = {
-    labels: data.historical.dates, // Use historical dates for the full range
-    datasets: [
-      {
-        label: "Historical Rentals",
-        data: data.historical.values,
-        borderColor: "rgba(255, 255, 255, 0.5)",
-        backgroundColor: "rgba(255, 255, 255, 0.1)",
-        borderWidth: 1.5,
-        pointRadius: 2,
-        tension: 0.3,
-        fill: true,
-        stepped: true,
-      },
-      {
-        label: "Forecasted Demand",
-        // Align forecast data with historical data
-        data: [
-          ...new Array(data.historical.values.length).fill(null),
-          ...data.forecast.values,
-        ],
-        borderColor: "var(--primary-yellow)",
-        borderWidth: 2.5,
-        pointRadius: 2,
-        tension: 0.3,
-      },
-    ],
-  };
-
-  const chartOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        position: "top",
-        align: "end",
-        labels: { color: "#ffffff", boxWidth: 12, padding: 20 },
-      },
-    },
-    scales: {
-      x: {
-        ticks: { color: "#a0a0a0" },
-        grid: { color: "rgba(255, 255, 255, 0.05)" },
-      },
-      y: {
-        ticks: { color: "#a0a0a0", stepSize: 1 },
-        grid: { color: "rgba(255, 255, 255, 0.1)" },
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: "Number of Daily Rentals",
-          color: "#ffffff",
-        },
-      },
-    },
-  };
-
-  return (
-    <div className="chart-wrapper">
-      <Line data={chartData} options={chartOptions} />
     </div>
   );
 };

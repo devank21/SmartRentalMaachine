@@ -1,213 +1,306 @@
+/* --- Global Styles & Variables --- */
 :root {
   --bg-color: #0a0a0a;
   --primary-yellow: #ffc107;
   --card-bg: #1a1a1a;
+  --card-bg-hover: #2a2a2a;
   --text-light: #ffffff;
   --text-medium: #a0a0a0;
   --border-color: #2f2f2f;
-  --status-working: #4caf50;
-  --status-idle: #ff9800;
-  --status-in-transit: #2196f3;
+  --status-available: #4caf50;
+  --status-in-use: #2196f3;
   --status-maintenance: #f44336;
+  --alert-critical: #f44336;
+  --alert-warning: #ff9800;
 }
 
 body {
   margin: 0;
-  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", "Roboto",
-    "Oxygen", "Ubuntu", "Cantarell", "Fira Sans", "Droid Sans", "Helvetica Neue",
-    sans-serif;
+  font-family: "Inter", sans-serif;
   background-color: var(--bg-color);
   color: var(--text-light);
 }
 
+/* --- App Layout --- */
 .app-container {
-  display: flex;
-  flex-direction: column;
-  height: 100vh;
   padding: 1.5rem;
   box-sizing: border-box;
-  overflow: hidden;
 }
-
 .app-header {
   display: flex;
   align-items: center;
   gap: 1rem;
   padding-bottom: 1.5rem;
   border-bottom: 1px solid var(--border-color);
-  flex-shrink: 0;
 }
-
 .app-header .logo {
   background-color: var(--primary-yellow);
   color: #000;
   font-weight: 900;
   font-size: 1.5rem;
   padding: 0.5rem 1rem;
+  cursor: pointer;
 }
-
 .app-header h1 {
   margin: 0;
   font-size: 1.75rem;
   font-weight: 600;
 }
-
 .main-content {
-  flex-grow: 1;
-  display: flex;
-  flex-direction: column;
   padding-top: 1.5rem;
-  overflow: hidden;
 }
 
-.card-header {
-  margin-bottom: 1rem;
-  flex-shrink: 0;
+/* --- Dashboard View --- */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
 }
-
-.card-header h2 {
-  margin: 0 0 0.25rem 0;
-  font-size: 1.2rem;
-}
-
-.card-header p {
-  margin: 0;
-  font-size: 0.9rem;
-  color: var(--text-medium);
-}
-
-.table-container-full-page {
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
+.summary-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
   border-radius: 8px;
-  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.summary-card:hover {
+  transform: translateY(-5px);
+  border-color: var(--primary-yellow);
+  background: var(--card-bg-hover);
+}
+.summary-card h2 {
+  margin: 0 0 0.5rem;
+  font-size: 1.5rem;
+}
+.summary-card .total-count {
+  margin: 0 0 1.5rem;
+  color: var(--text-medium);
+  font-size: 1rem;
+}
+.status-breakdown {
   display: flex;
-  flex-direction: column;
-  height: 100%;
-  overflow: hidden;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.status-item {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.status-item span {
+  display: block;
+  font-size: 0.8rem;
+  color: var(--text-medium);
+  font-weight: 400;
+}
+.status-item.available {
+  color: var(--status-available);
+}
+.status-item.in-use {
+  color: var(--status-in-use);
+}
+.status-item.maintenance {
+  color: var(--status-maintenance);
 }
 
+/* --- Detail & Vehicle Views --- */
+.detail-view-container {
+  animation: fadeIn 0.5s ease;
+}
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+.back-button {
+  background: var(--card-bg);
+  color: var(--text-light);
+  border: 1px solid var(--border-color);
+  padding: 0.75rem 1.5rem;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-bottom: 1.5rem;
+  font-size: 1rem;
+}
+.back-button:hover {
+  background: var(--card-bg-hover);
+  border-color: var(--primary-yellow);
+}
+.detail-view-container h2 {
+  margin: 0 0 1.5rem;
+  font-size: 2rem;
+}
+
+/* --- Table Styles --- */
 .table-wrapper {
-  overflow-y: auto;
-  flex-grow: 1;
+  overflow-x: auto;
 }
-
 table {
   width: 100%;
   border-collapse: collapse;
 }
-
 th,
 td {
-  padding: 0.8rem 1rem;
+  padding: 1rem;
   text-align: left;
   border-bottom: 1px solid var(--border-color);
-  font-size: 0.9rem;
 }
-
 thead th {
   background-color: #252525;
-  position: sticky;
-  top: 0;
-  font-weight: 600;
   color: var(--text-medium);
 }
-
 tbody tr {
   cursor: pointer;
   transition: background-color 0.2s ease;
 }
-
 tbody tr:hover {
-  background-color: #2c2c2c;
+  background-color: var(--card-bg-hover);
 }
-
 .id-cell {
   font-weight: 600;
   color: var(--primary-yellow);
 }
-
 .status-badge {
-  padding: 0.25rem 0.6rem;
-  border-radius: 12px;
+  padding: 0.3rem 0.7rem;
+  border-radius: 15px;
   font-size: 0.8rem;
   font-weight: bold;
   color: white;
 }
-.status-working {
-  background-color: var(--status-working);
+.status-available {
+  background-color: var(--status-available);
 }
-.status-idle {
-  background-color: var(--status-idle);
-}
-.status-in-transit {
-  background-color: var(--status-in-transit);
+.status-in-use {
+  background-color: var(--status-in-use);
 }
 .status-maintenance {
   background-color: var(--status-maintenance);
 }
 
-.detail-container {
+/* --- Vehicle Detail Grid --- */
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  grid-template-rows: auto auto;
+  gap: 1.5rem;
+}
+.vehicle-card {
+  background: var(--card-bg);
+  padding: 1.5rem;
+  border-radius: 8px;
+  border: 1px solid var(--border-color);
+}
+.vehicle-card h3 {
+  margin: 0 0 1rem;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+}
+.map-card {
+  grid-column: 1 / 2;
+  grid-row: 1 / 3;
+  min-height: 500px;
   display: flex;
   flex-direction: column;
-  height: 100%;
+}
+.map-card .leaflet-container {
+  flex-grow: 1;
+  border-radius: 5px;
+}
+.telemetry-card {
+  grid-column: 2 / 3;
+  grid-row: 1 / 2;
+}
+.alerts-card {
+  grid-column: 2 / 3;
+  grid-row: 2 / 3;
+}
+.prediction-card {
+  grid-column: 1 / 3;
 }
 
-.back-button {
-  background: none;
-  border: 1px solid var(--border-color);
-  color: var(--text-medium);
-  padding: 0.5rem 1rem;
-  border-radius: 4px;
-  cursor: pointer;
-  align-self: flex-start;
-  margin-bottom: 1.5rem;
-  transition: all 0.2s ease;
-}
-
-.back-button:hover {
-  border-color: var(--primary-yellow);
-  color: var(--primary-yellow);
-}
-
-.detail-header {
+/* Vehicle Card Content */
+.telemetry-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
   margin-bottom: 1rem;
 }
-
-.detail-header h2 {
+.telemetry-item p {
   margin: 0;
-  font-size: 1.5rem;
-}
-.detail-id {
-  color: var(--primary-yellow);
-}
-.detail-header p {
-  margin: 0.25rem 0 0;
-  color: var(--text-medium);
-}
-
-.chart-container {
-  flex-grow: 1;
-  background-color: var(--card-bg);
-  border: 1px solid var(--border-color);
-  border-radius: 8px;
-  padding: 1.25rem;
-}
-
-.chart-wrapper {
-  height: 100%;
-  width: 100%;
-}
-
-.loading-message {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  color: var(--text-medium);
   font-size: 1.2rem;
+  font-weight: 600;
+}
+.progress-bar {
+  width: 60%;
+  background: #333;
+  border-radius: 5px;
+  overflow: hidden;
+}
+.progress-bar div {
+  background: var(--primary-yellow);
+  padding: 0.2rem 0.5rem;
+  text-align: right;
+  color: #000;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.alerts-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+.alerts-card li {
+  padding: 0.5rem;
+  border-radius: 4px;
+  margin-bottom: 0.5rem;
+}
+.alert-critical {
+  background: rgba(244, 67, 54, 0.2);
+  color: var(--alert-critical);
+}
+.alert-warning {
+  background: rgba(255, 152, 0, 0.2);
+  color: var(--alert-warning);
 }
 
+/* Prediction Tool */
+.prediction-card input {
+  width: 200px;
+  padding: 0.5rem;
+  background: #333;
+  border: 1px solid var(--border-color);
+  color: white;
+  border-radius: 4px;
+  margin-right: 1rem;
+}
+.prediction-card button {
+  padding: 0.5rem 1rem;
+  background: var(--primary-yellow);
+  color: #000;
+  border: none;
+  border-radius: 4px;
+  font-weight: 600;
+  cursor: pointer;
+}
+.prediction-result {
+  margin-top: 1rem;
+  padding: 0.75rem;
+  border-radius: 4px;
+  font-weight: 600;
+}
+
+/* --- Utility --- */
+.loading-message,
+.error-message {
+  text-align: center;
+  padding: 2rem;
+  font-size: 1.2rem;
+  color: var(--text-medium);
+}
 .error-message {
   color: var(--status-maintenance);
 }
