@@ -1,86 +1,72 @@
 import React, { Suspense } from "react";
+// This line has been corrected
 import { Canvas } from "@react-three/fiber";
-import {
-  OrbitControls,
-  Text,
-  Box,
-  Cylinder,
-  Environment,
-} from "@react-three/drei";
+import { OrbitControls, Text, Environment } from "@react-three/drei";
 
-// This component represents a piece of equipment in the 3D scene.
-// In a real scenario, you would replace the <Box> or <Cylinder>
-// with a loaded 3D model (e.g., from a GLTF file).
-const Equipment = ({ position, name, status }) => {
-  const color =
-    status === "In-Use"
-      ? "#f39c12"
-      : status === "Maintenance"
-      ? "#c0392b"
-      : "#27ae60";
-
+// A simple placeholder for your actual 3D model
+const ModelPlaceholder = () => {
   return (
-    <group position={position}>
-      <Box args={[2, 2, 4]} position={[0, 1, 0]}>
-        <meshStandardMaterial color={color} />
-      </Box>
-      <Text
-        position={[0, 3.5, 0]}
-        color="white"
-        fontSize={0.5}
-        anchorX="center"
-        anchorY="middle"
-      >
-        {name}
-      </Text>
-    </group>
+    <mesh castShadow position={[0, 1, 0]}>
+      <boxGeometry args={[2, 2, 2]} />
+      <meshStandardMaterial color="royalblue" metalness={0.6} roughness={0.2} />
+    </mesh>
+  );
+};
+
+// A simple ground plane to receive shadows
+const GroundPlane = () => {
+  return (
+    <mesh
+      receiveShadow
+      rotation={[-Math.PI / 2, 0, 0]}
+      position={[0, -0.01, 0]}
+    >
+      <planeGeometry args={[20, 20]} />
+      <meshStandardMaterial color="#888888" />
+    </mesh>
   );
 };
 
 const BimView = ({ navigateTo }) => {
-  // In a real application, this data would come from your API
-  const equipmentData = [
-    { name: "CAT-D6T", status: "In-Use", position: [-10, 0, 5] },
-    { name: "CAT-320", status: "In-Use", position: [10, 0, -5] },
-    { name: "CAT-950M", status: "Available", position: [0, 0, 10] },
-    { name: "CAT-336", status: "Maintenance", position: [15, 0, 15] },
-  ];
-
   return (
     <div className="view-container bim-container">
-      <div className="bim-header">
-        <h2>BIM Site Viewer</h2>
-        <p>
-          This is a 3D representation of the job site. Click and drag to
-          navigate.
-        </p>
+      <div className="button-container">
+        <button className="nav-button" onClick={() => navigateTo("dashboard")}>
+          Back to Dashboard
+        </button>
       </div>
-      <Canvas camera={{ position: [25, 25, 25], fov: 25 }}>
+
+      <Canvas shadows camera={{ position: [10, 10, 10], fov: 35 }}>
+        <ambientLight intensity={1.5} />
+
+        <directionalLight
+          castShadow
+          position={[10, 15, 5]}
+          intensity={1.5}
+          shadow-mapSize-width={2048}
+          shadow-mapSize-height={2048}
+        />
+
+        <axesHelper args={[5]} />
+
         <Suspense fallback={null}>
-          {/* Lighting and Environment */}
-          <ambientLight intensity={0.5} />
-          <directionalLight position={[10, 10, 5]} intensity={1} />
+          <ModelPlaceholder />
+          <GroundPlane />
+
+          <Text
+            position={[0, 3, 0]}
+            fontSize={0.5}
+            color="black"
+            anchorX="center"
+            anchorY="middle"
+          >
+            BIM Digital Twin
+          </Text>
+
           <Environment preset="sunset" />
-
-          {/* Controls to navigate the scene */}
-          <OrbitControls />
-
-          {/* The ground plane */}
-          <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.1, 0]}>
-            <planeGeometry args={[100, 100]} />
-            <meshStandardMaterial color="#555" />
-          </mesh>
-
-          {/* Placeholder for a building structure */}
-          <Box args={[30, 10, 20]} position={[0, 5, 0]}>
-            <meshStandardMaterial color="gray" transparent opacity={0.3} />
-          </Box>
-
-          {/* Render the equipment from our data */}
-          {equipmentData.map((eq) => (
-            <Equipment key={eq.name} {...eq} />
-          ))}
         </Suspense>
+
+        <OrbitControls />
       </Canvas>
     </div>
   );
