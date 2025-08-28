@@ -5,21 +5,23 @@ const API_BASE_URL = "http://127.0.0.1:5000/api";
 
 const CategoryView = ({ category, navigateTo }) => {
   const [equipment, setEquipment] = useState([]);
+  const [isLoading, setIsLoading] = useState(true); // Start in a loading state
   const [error, setError] = useState("");
 
   useEffect(() => {
-    // Reset state on category change
+    // When the category changes, reset state and start loading
+    setIsLoading(true);
     setEquipment([]);
     setError("");
 
     axios
       .get(`${API_BASE_URL}/equipment/type/${category}`)
       .then((res) => {
-        // FIX: More robust check for the data structure
+        // Check for the correct data structure
         if (res.data && Array.isArray(res.data.data)) {
           setEquipment(res.data.data);
         } else {
-          // This error message will now only appear for genuine server issues
+          // Set a specific error if the data is wrong
           setError("Received invalid data format from the server.");
           console.error("Invalid data structure:", res.data);
         }
@@ -29,12 +31,35 @@ const CategoryView = ({ category, navigateTo }) => {
         setError(
           "Could not load equipment details. Please ensure the backend is running."
         );
+      })
+      .finally(() => {
+        // Always stop loading, whether it succeeded or failed
+        setIsLoading(false);
       });
-  }, [category]);
+  }, [category]); // This effect runs whenever the 'category' prop changes
 
-  if (error) return <div className="error-message">{error}</div>;
-  if (equipment.length === 0 && !error)
+  // Display a loading message while fetching data
+  if (isLoading) {
     return <div className="loading">Loading {category} fleet...</div>;
+  }
+
+  // Display an error message if something went wrong
+  if (error) {
+    return <div className="error-message">{error}</div>;
+  }
+
+  // Display a message if there's no equipment for this category
+  if (equipment.length === 0) {
+    return (
+      <div className="view-container">
+        <button className="back-button" onClick={() => navigateTo("dashboard")}>
+          &larr; Back to Dashboard
+        </button>
+        <h2>{category} Fleet</h2>
+        <p>No equipment found for this category.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="view-container">

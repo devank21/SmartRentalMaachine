@@ -1,81 +1,17 @@
-EquipmentID,Type,Info,RentalStartDate,ExpectedReturnDate,ActualReturnDate,EngineHours,FuelLevel,Status,Latitude,Longitude,Customer,JobSiteLat,JobSiteLon,JobSiteRadius,EngineLoad
-CAT320-001,Excavator,"20-ton, GPS",2025-08-01,2025-08-15,2025-08-16,1250,85,In-Use,40.7128,-74.0060,ConstructoCorp,40.71,-74.01,1.5,65
-CAT320-002,Excavator,"20-ton, Hammer",2025-08-05,2025-08-20,,1300,90,In-Use,34.0522,-118.2437,BuildWell Inc.,34.05,-118.24,2.0,75
-CAT320-003,Excavator,"20-ton, GPS",2025-08-10,2025-08-25,,1100,70,Available,41.8781,-87.6298,,41.88,-87.63,1.0,0
-CAT950-001,Wheel Loader,"3.5-yard bucket",2025-07-20,2025-08-10,2025-08-10,2100,95,Maintenance,29.7604,-95.3698,Diggers LLC,29.76,-95.37,2.5,0
-CAT950-002,Wheel Loader,"3.5-yard bucket",2025-08-12,2025-08-22,,1950,80,In-Use,33.4484,-112.0740,ConstructoCorp,33.45,-112.07,1.0,55
-CATD6-001,Dozer,"VPAT Blade, GPS",2025-08-03,2025-09-01,,3200,60,In-Use,39.7392,-104.9903,BuildWell Inc.,39.74,-104.99,3.0,85
-CATD6-002,Dozer,"VPAT Blade, GPS",2025-08-15,2025-08-30,,3150,75,Available,47.6062,-122.3321,,47.61,-122.33,1.5,0
-CAT140-001,Motor Grader,"14-foot moldboard",2025-07-25,2025-08-18,2025-08-18,2800,88,Maintenance,36.1699,-115.1398,Diggers LLC,36.17,-115.14,2.0,0
-CAT730-001,Articulated Truck,"30-ton capacity",2025-08-20,2025-09-10,,4100,92,In-Use,32.7767,-96.7970,ConstructoCorp,32.78,-96.80,2.5,90
-CAT730-002,Articulated Truck,"30-ton capacity",2025-08-01,2025-08-15,2025-08-14,4050,12,In-Use,30.2672,-97.7431,BuildWell Inc.,30.27,-97.74,1.0,88
-CAT320-004,Excavator,"20-ton, GPS",2025-08-22,2025-09-05,,1280,78,Available,38.9072,-77.0369,,38.91,-77.04,1.5,0
-CAT950-003,Wheel Loader,"3.5-yard bucket",2025-08-18,2025-08-28,,2050,91,In-Use,37.7749,-122.4194,Diggers LLC,37.77,-122.42,2.0,60
-CATD6-003,Dozer,"VPAT Blade, GPS",2025-08-08,2025-08-23,2025-08-25,3300,65,Maintenance,34.0521,-118.2438,ConstructoCorp,34.05,-118.24,1.0,0
-CAT320-005,Excavator,"20-ton, GPS",2025-08-25,2025-09-10,,1350,88,In-Use,36.1146,-86.7816,BuildWell Inc.,36.11,-86.78,2.5,70
-CAT950-004,Wheel Loader,"3.5-yard bucket",2025-08-02,2025-08-12,2025-08-12,2150,85,Available,41.8782,-87.6297,,41.88,-87.63,1.5,0
-CATD6-004,Dozer,"VPAT Blade, GPS",2025-08-28,2025-09-15,,3250,70,In-Use,33.7490,-84.3880,Diggers LLC,33.75,-84.39,2.0,80
-CAT320-006,Excavator,"20-ton, GPS",2025-08-11,2025-08-26,2025-08-26,1400,92,Available,34.0523,-118.2436,,34.05,-118.24,1.0,0
-CAT950-005,Wheel Loader,"3.5-yard bucket",2025-08-19,2025-09-02,,2200,93,In-Use,32.7157,-117.1611,ConstructoCorp,32.72,-117.16,2.5,68
-CATD6-005,Dozer,"VPAT Blade, GPS",2025-08-09,2025-08-24,2025-08-24,3400,72,Maintenance,45.5051,-122.6750,BuildWell Inc.,45.51,-122.68,1.5,0
-CAT320-007,Excavator,"20-ton, Hammer",2025-08-29,2025-09-12,,1450,85,In-Use,39.2904,-76.6122,Diggers LLC,39.29,-76.61,2.0,72
-CAT320-008,Excavator,"20-ton, GPS",2025-06-01,2025-06-15,2025-06-15,1500,95,Available,40.7128,-74.0060,,40.71,-74.01,1.5,0
-CAT950-006,Wheel Loader,"3.5-yard bucket",2025-06-05,2025-06-20,2025-06-21,2250,88,Available,34.0522,-118.2437,,34.05,-118.24,2.0,0
-CATD6-006,Dozer,"VPAT Blade, GPS",2025-06-10,2025-06-25,,3350,68,In-Use,41.8781,-87.6298,TerraForm,41.88,-87.63,1.0,82
-CAT140-002,Motor Grader,"14-foot moldboard",2025-06-12,2025-06-28,,2850,90,In-Use,29.7604,-95.3698,ConstructoCorp,29.76,-95.37,2.5,78
-CAT730-003,Articulated Truck,"30-ton capacity",2025-06-15,2025-07-05,2025-07-06,4150,94,Available,33.4484,-112.0740,,33.45,-112.07,1.0,0
-CAT320-009,Excavator,"20-ton, Hammer",2025-06-20,2025-07-10,,1550,82,In-Use,39.7392,-104.9903,BuildWell Inc.,39.74,-104.99,3.0,77
-CAT950-007,Wheel Loader,"3.5-yard bucket",2025-06-25,2025-07-15,2025-07-15,2300,89,Maintenance,47.6062,-122.3321,Diggers LLC,47.61,-122.33,1.5,0
-CATD6-007,Dozer,"VPAT Blade, GPS",2025-07-01,2025-07-20,,3500,75,In-Use,36.1699,-115.1398,TerraForm,36.17,-115.14,2.0,91
-CAT140-003,Motor Grader,"14-foot moldboard",2025-07-05,2025-07-25,2025-07-26,2900,82,Available,32.7767,-96.7970,,32.78,-96.80,2.5,0
-CAT730-004,Articulated Truck,"30-ton capacity",2025-07-10,2025-08-01,,4200,89,In-Use,30.2672,-97.7431,ConstructoCorp,30.27,-97.74,1.0,85
-CAT320-010,Excavator,"20-ton, GPS",2025-07-15,2025-08-05,,1600,91,In-Use,38.9072,-77.0369,BuildWell Inc.,38.91,-77.04,1.5,68
-CAT950-008,Wheel Loader,"3.5-yard bucket",2025-07-20,2025-08-10,2025-08-11,2350,90,Available,37.7749,-122.4194,,37.77,-122.42,2.0,0
-CATD6-008,Dozer,"VPAT Blade, GPS",2025-07-25,2025-08-15,,3450,70,In-Use,34.0521,-118.2438,Diggers LLC,34.05,-118.24,1.0,88
-CAT140-004,Motor Grader,"14-foot moldboard",2025-07-28,2025-08-20,2025-08-20,2950,84,Maintenance,36.1146,-86.7816,TerraForm,36.11,-86.78,2.5,0
-CAT730-005,Articulated Truck,"30-ton capacity",2025-08-01,2025-08-25,,4300,96,In-Use,41.8782,-87.6297,ConstructoCorp,41.88,-87.63,1.5,92
-CAT320-011,Excavator,"20-ton, Hammer",2025-08-05,2025-08-20,,1650,89,Available,33.7490,-84.3880,,33.75,-84.39,2.0,0
-CAT950-009,Wheel Loader,"3.5-yard bucket",2025-08-10,2025-08-25,2025-08-25,2400,86,Available,34.0523,-118.2436,,34.05,-118.24,1.0,0
-CATD6-009,Dozer,"VPAT Blade, GPS",2025-08-12,2025-09-01,,3600,78,In-Use,32.7157,-117.1611,BuildWell Inc.,32.72,-117.16,2.5,86
-CAT140-005,Motor Grader,"14-foot moldboard",2025-08-15,2025-09-05,,3000,86,In-Use,45.5051,-122.6750,Diggers LLC,45.51,-122.68,1.5,75
-CAT730-006,Articulated Truck,"30-ton capacity",2025-08-20,2025-09-15,,4250,91,In-Use,39.2904,-76.6122,TerraForm,39.29,-76.61,2.0,89
-CAT320-012,Excavator,"20-ton, GPS",2025-05-01,2025-05-15,2025-05-16,1700,93,Available,40.7128,-74.0060,,40.71,-74.01,1.5,0
-CAT950-010,Wheel Loader,"3.5-yard bucket",2025-05-05,2025-05-20,2025-05-20,2450,92,Maintenance,34.0522,-118.2437,ConstructoCorp,34.05,-118.24,2.0,0
-CATD6-010,Dozer,"VPAT Blade, GPS",2025-05-10,2025-05-25,,3550,73,In-Use,41.8781,-87.6298,BuildWell Inc.,41.88,-87.63,1.0,84
-CAT140-006,Motor Grader,"14-foot moldboard",2025-05-12,2025-05-28,,3050,81,In-Use,29.7604,-95.3698,Diggers LLC,29.76,-95.37,2.5,76
-CAT730-007,Articulated Truck,"30-ton capacity",2025-05-15,2025-06-05,2025-06-06,4400,95,Available,33.4484,-112.0740,,33.45,-112.07,1.0,0
-CAT320-013,Excavator,"20-ton, Hammer",2025-05-20,2025-06-10,,1750,86,In-Use,39.7392,-104.9903,TerraForm,39.74,-104.99,3.0,79
-CAT950-011,Wheel Loader,"3.5-yard bucket",2025-05-25,2025-06-15,2025-06-15,2500,85,Available,47.6062,-122.3321,,47.61,-122.33,1.5,0
-CATD6-011,Dozer,"VPAT Blade, GPS",2025-05-28,2025-06-20,,3700,80,In-Use,36.1699,-115.1398,ConstructoCorp,36.17,-115.14,2.0,90
-CAT140-007,Motor Grader,"14-foot moldboard",2025-06-01,2025-06-25,2025-06-26,3100,88,Maintenance,32.7767,-96.7970,BuildWell Inc.,32.78,-96.80,2.5,0
-CAT730-008,Articulated Truck,"30-ton capacity",2025-06-05,2025-07-01,,4350,93,In-Use,30.2672,-97.7431,Diggers LLC,30.27,-97.74,1.0,87
-CAT320-014,Excavator,"20-ton, GPS",2025-06-10,2025-06-25,,1800,90,In-Use,38.9072,-77.0369,TerraForm,38.91,-77.04,1.5,71
-CAT950-012,Wheel Loader,"3.5-yard bucket",2025-06-15,2025-07-05,2025-07-05,2550,91,Available,37.7749,-122.4194,,37.77,-122.42,2.0,0
-CATD6-012,Dozer,"VPAT Blade, GPS",2025-06-20,2025-07-10,,3650,76,In-Use,34.0521,-118.2438,ConstructoCorp,34.05,-118.24,1.0,89
-CAT140-008,Motor Grader,"14-foot moldboard",2025-06-25,2025-07-15,,3150,83,In-Use,36.1146,-86.7816,BuildWell Inc.,36.11,-86.78,2.5,74
-CAT730-009,Articulated Truck,"30-ton capacity",2025-07-01,2025-07-20,2025-07-21,4500,97,Available,41.8782,-87.6297,,41.88,-87.63,1.5,0
-CAT320-015,Excavator,"20-ton, Hammer",2025-07-05,2025-07-25,,1850,92,In-Use,33.7490,-84.3880,Diggers LLC,33.75,-84.39,2.0,73
-CAT950-013,Wheel Loader,"3.5-yard bucket",2025-07-10,2025-07-28,,2600,87,In-Use,34.0523,-118.2436,TerraForm,34.05,-118.24,1.0,58
-CATD6-013,Dozer,"VPAT Blade, GPS",2025-07-15,2025-08-05,,3800,82,In-Use,32.7157,-117.1611,ConstructoCorp,32.72,-117.16,2.5,85
-CAT140-009,Motor Grader,"14-foot moldboard",2025-07-20,2025-08-10,2025-08-10,3200,87,Maintenance,45.5051,-122.6750,BuildWell Inc.,45.51,-122.68,1.5,0
-CAT730-010,Articulated Truck,"30-ton capacity",2025-07-25,2025-08-15,,4450,90,In-Use,39.2904,-76.6122,Diggers LLC,39.29,-76.61,2.0,93
-CAT320-016,Excavator,"20-ton, GPS",2025-04-01,2025-04-15,2025-04-15,1900,88,Available,40.7128,-74.0060,,40.71,-74.01,1.5,0
-CAT950-014,Wheel Loader,"3.5-yard bucket",2025-04-05,2025-04-20,,2650,94,In-Use,34.0522,-118.2437,TerraForm,34.05,-118.24,2.0,62
-CATD6-014,Dozer,"VPAT Blade, GPS",2025-04-10,2025-04-25,2025-04-26,3750,79,Available,41.8781,-87.6298,,41.88,-87.63,1.0,0
-CAT140-010,Motor Grader,"14-foot moldboard",2025-04-12,2025-04-28,,3250,80,In-Use,29.7604,-95.3698,ConstructoCorp,29.76,-95.37,2.5,79
-CAT730-011,Articulated Truck,"30-ton capacity",2025-04-15,2025-05-05,2025-05-05,4600,98,Maintenance,33.4484,-112.0740,BuildWell Inc.,33.45,-112.07,1.0,0
-CAT320-017,Excavator,"20-ton, Hammer",2025-04-20,2025-05-10,,1950,91,In-Use,39.7392,-104.9903,Diggers LLC,39.74,-104.99,3.0,76
-CAT950-015,Wheel Loader,"3.5-yard bucket",2025-04-25,2025-05-15,,2700,89,In-Use,47.6062,-122.3321,TerraForm,47.61,-122.33,1.5,59
-CATD6-015,Dozer,"VPAT Blade, GPS",2025-04-28,2025-05-20,2025-05-21,3900,84,Available,36.1699,-115.1398,,36.17,-115.14,2.0,0
-CAT140-011,Motor Grader,"14-foot moldboard",2025-05-01,2025-05-25,,3300,89,In-Use,32.7767,-96.7970,ConstructoCorp,32.78,-96.80,2.5,81
-CAT730-012,Articulated Truck,"30-ton capacity",2025-05-05,2025-06-01,,4550,88,In-Use,30.2672,-97.7431,BuildWell Inc.,30.27,-97.74,1.0,94
-CAT320-018,Excavator,"20-ton, GPS",2025-05-10,2025-05-25,,2000,87,In-Use,38.9072,-77.0369,Diggers LLC,38.91,-77.04,1.5,69
-CAT950-016,Wheel Loader,"3.5-yard bucket",2025-05-15,2025-06-05,2025-06-05,2750,93,Available,37.7749,-122.4194,,37.77,-122.42,2.0,0
-CATD6-016,Dozer,"VPAT Blade, GPS",2025-05-20,2025-06-10,,3850,81,In-Use,34.0521,-118.2438,TerraForm,34.05,-118.24,1.0,87
-CAT140-012,Motor Grader,"14-foot moldboard",2025-05-25,2025-06-15,,3350,84,In-Use,36.1146,-86.7816,ConstructoCorp,36.11,-86.78,2.5,77
-CAT730-013,Articulated Truck,"30-ton capacity",2025-05-28,2025-06-20,2025-06-20,4700,99,Maintenance,41.8782,-87.6297,BuildWell Inc.,41.88,-87.63,1.5,0
-CAT320-019,Excavator,"20-ton, Hammer",2025-06-01,2025-06-20,,2050,93,In-Use,33.7490,-84.3880,Diggers LLC,33.75,-84.39,2.0,74
-CAT950-017,Wheel Loader,"3.5-yard bucket",2025-06-05,2025-06-25,,2800,90,In-Use,34.0523,-118.2436,TerraForm,34.05,-118.24,1.0,61
-CATD6-017,Dozer,"VPAT Blade, GPS",2025-06-10,2025-07-01,,4000,85,In-Use,32.7157,-117.1611,ConstructoCorp,32.72,-117.16,2.5,88
-CAT140-013,Motor Grader,"14-foot moldboard",2025-06-15,2025-07-05,2025-07-06,3400,91,Available,45.5051,-122.6750,,45.51,-122.68,1.5,0
-CAT730-014,Articulated Truck,"30-ton capacity",2025-06-20,2025-07-15,,4650,86,In-Use,39.2904,-76.6122,BuildWell Inc.,39.29,-76.61,2.0,95
+EquipmentID,Type,Status,Customer,JobSiteName,RentalStartDate,ExpectedReturnDate,ActualReturnDate,EngineHours,FuelLevel,EngineLoad,Latitude,Longitude,JobSiteLat,JobSiteLon,JobSiteRadius
+CAT-D6T,Dozer,In-Use,ConstructCorp,Downtown Tower Project,2023-01-15,2023-09-20,2023-09-22,1250,75,60,40.7128,-74.0060,40.7128,-74.0060,0.5
+CAT-D8T,Dozer,Available,N/A,N/A,N/A,N/A,N/A,850,100,0,40.7580,-73.9855,N/A,N/A,N/A
+CAT-320,Excavator,In-Use,InfraBuilders,Highway 101 Expansion,2023-02-20,2023-10-15,N/A,1500,45,80,34.0522,-118.2437,34.0522,-118.2437,1.2
+CAT-336,Excavator,Maintenance,N/A,N/A,N/A,N/A,N/A,2100,10,5,34.1522,-118.2437,N/A,N/A,N/A
+CAT-938M,Wheel Loader,Available,N/A,N/A,N/A,N/A,N/A,700,95,0,41.8781,-87.6298,N/A,N/A,N/A
+CAT-950M,Wheel Loader,In-Use,Rock Quarry Inc.,North Quarry Site,2023-03-10,2023-11-01,N/A,1800,60,70,39.7392,-104.9903,39.7400,-105.0000,2.0
+CAT-745,Articulated Truck,In-Use,EarthMovers LLC,Westside Development,2023-04-05,2023-12-25,N/A,1950,85,90,29.7604,-95.3698,29.7604,-95.3698,1.5
+CAT-730,Articulated Truck,Available,N/A,N/A,N/A,N/A,N/A,600,100,0,29.7604,-95.4698,N/A,N/A,N/A
+CAT-140,Motor Grader,Maintenance,N/A,N/A,N/A,N/A,N/A,3200,25,10,36.1699,-115.1398,N/A,N/A,N/A
+CAT-CS56,Vibratory Soil Compactor,In-Use,PaveRight Co.,Airport Runway Project,2023-05-12,2023-10-30,N/A,1100,55,75,33.4484,-112.0740,33.4354,-112.0116,2.5
+CAT-D5,Dozer,In-Use,GreenScape Land,City Park Renovation,2023-06-01,2023-11-15,N/A,980,65,55,47.6062,-122.3321,47.6062,-122.3321,0.8
+CAT-315,Excavator,Available,N/A,N/A,N/A,N/A,N/A,450,100,0,47.6562,-122.3321,N/A,N/A,N/A
+CAT-966M,Wheel Loader,In-Use,Aggregate Supply,East Gravel Pit,2023-01-25,2023-09-30,2023-10-02,2300,40,85,32.7767,-96.7970,32.7767,-96.7970,1.8
+CAT-740,Articulated Truck,Maintenance,N/A,N/A,N/A,N/A,N/A,2800,15,5,32.8767,-96.7970,N/A,N/A,N/A
+CAT-D9T,Dozer,Available,N/A,N/A,N/A,N/A,N/A,400,100,0,40.7128,-74.0260,N/A,N/A,N/A
+CAT-349,Excavator,In-Use,Major Demolition,Old Factory Site,2023-07-20,2024-01-20,N/A,1400,70,95,41.8781,-87.6498,41.8781,-87.6498,1.0

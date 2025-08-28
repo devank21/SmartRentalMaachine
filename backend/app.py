@@ -14,11 +14,13 @@ CORS(app)
 
 # --- Data Loading and Preparation ---
 try:
-    df = pd.read_csv('rental_data.csv')
-    # Convert date columns, coercing errors to NaT (Not a Time)
+    # DEFINITIVE FIX: Read empty strings as NaN and then replace all NaN with None (null)
+    df = pd.read_csv('rental_data.csv', na_values=['N/A', 'NaN', ''])
+    df = df.replace({np.nan: None})
+
     df['RentalStartDate'] = pd.to_datetime(df['RentalStartDate'], errors='coerce')
     df['ExpectedReturnDate'] = pd.to_datetime(df['ExpectedReturnDate'], errors='coerce')
-    print("CSV data loaded successfully.")
+    print("CSV data loaded and cleaned successfully.")
 except FileNotFoundError:
     print("FATAL: rental_data.csv not found. The app cannot run.")
     df = pd.DataFrame()
@@ -32,14 +34,11 @@ if not df.empty:
         # Anomaly Detection Model
         anomaly_model = IsolationForest(contamination=0.05, random_state=42)
         telemetry_features = ['EngineHours', 'FuelLevel', 'EngineLoad']
-        
-        # More robust data cleaning for ML models
         for col in telemetry_features:
             df[col] = pd.to_numeric(df[col], errors='coerce')
-            if df[col].isnull().any():
-                median_val = df[col].median()
-                df[col].fillna(median_val, inplace=True)
-        
+            # Use the overall median for filling missing telemetry data
+            df[col].fillna(df[col].median(), inplace=True)
+            
         anomaly_model.fit(df[telemetry_features])
         df['IsAnomalous'] = anomaly_model.predict(df[telemetry_features])
         print("Anomaly detection model trained successfully.")
@@ -47,60 +46,40 @@ if not df.empty:
         # Predictive Availability Model
         availability_model = LinearRegression()
         if 'ActualReturnDate' in df.columns:
-            df_train = df.dropna(subset=['ActualReturnDate', 'RentalStartDate']).copy()
+            df_train = df.dropna(subset=['ActualReturnDate', 'RentalStartDate', 'EngineHours']).copy()
             df_train['ActualReturnDate'] = pd.to_datetime(df_train['ActualReturnDate'], errors='coerce')
-            df_train = df_train.dropna(subset=['ActualReturnDate', 'RentalStartDate'])
-
             if not df_train.empty:
                 df_train['ActualDuration'] = (df_train['ActualReturnDate'] - df_train['RentalStartDate']).dt.days
-                
-                # Ensure there are no negative durations
                 df_train = df_train[df_train['ActualDuration'] >= 0]
-
-                X_train = df_train[['EngineHours']]
-                y_train = df_train['ActualDuration']
-                
-                if not y_train.empty:
+                if not df_train.empty:
+                    X_train = df_train[['EngineHours']]
+                    y_train = df_train['ActualDuration']
                     availability_model.fit(X_train, y_train)
                     print("Predictive availability model trained successfully.")
-                else:
-                    availability_model = None
-                    print("Warning: No valid data to train availability model.")
-            else:
-                availability_model = None
-                print("Warning: No complete historical data for training availability model.")
-        else:
-            availability_model = None
-            print("Warning: 'ActualReturnDate' column not found. Cannot train availability model.")
+                else: availability_model = None
+            else: availability_model = None
+        else: availability_model = None
     except Exception as e:
         print(f"Error during model training: {e}")
         traceback.print_exc()
 
-
 # --- Helper Functions ---
 def haversine(lat1, lon1, lat2, lon2):
-    """Calculate distance between two points on Earth."""
+    if any(v is None for v in [lat1, lon1, lat2, lon2]): return None
     R = 6371
-    dLat = math.radians(lat2 - lat1)
-    dLon = math.radians(lon2 - lon1)
+    dLat, dLon = math.radians(lat2 - lat1), math.radians(lon2 - lon1)
     a = math.sin(dLat / 2)**2 + math.cos(math.radians(lat1)) * math.cos(math.radians(lat2)) * math.sin(dLon / 2)**2
-    c = 2 * math.atan2(math.sqrt(a), math.sqrt(1 - a))
-    return R * c
+    return R * (2 * math.atan2(math.sqrt(a), math.sqrt(1 - a)))
 
 def generate_alerts(vehicle):
-    """Generate alerts based on vehicle status and location."""
     alerts = []
-    try:
-        if pd.notna(vehicle.get('Latitude')) and pd.notna(vehicle.get('JobSiteLat')):
-            dist_from_site = haversine(vehicle['Latitude'], vehicle['Longitude'], vehicle['JobSiteLat'], vehicle['JobSiteLon'])
-            if dist_from_site > vehicle.get('JobSiteRadius', 1.0): # Default radius 1km
-                alerts.append({"type": "Geofence", "message": f"Vehicle is {dist_from_site:.2f} km away from job site.", "level": "critical"})
-        if vehicle.get('IsAnomalous') == -1:
-            alerts.append({"type": "Telemetry", "message": "Anomalous sensor readings detected.", "level": "warning"})
-        if pd.notna(vehicle.get('FuelLevel')) and vehicle['FuelLevel'] < 15:
-            alerts.append({"type": "Fuel", "message": f"Low fuel: {vehicle['FuelLevel']}% remaining.", "level": "warning"})
-    except Exception as e:
-        print(f"Error generating alerts for {vehicle.get('EquipmentID')}: {e}")
+    dist = haversine(vehicle.get('Latitude'), vehicle.get('Longitude'), vehicle.get('JobSiteLat'), vehicle.get('JobSiteLon'))
+    if dist is not None and vehicle.get('JobSiteRadius') is not None and dist > vehicle['JobSiteRadius']:
+        alerts.append({"type": "Geofence", "message": f"Vehicle is {dist:.2f} km from job site.", "level": "critical"})
+    if vehicle.get('IsAnomalous') == -1:
+        alerts.append({"type": "Telemetry", "message": "Anomalous sensor readings.", "level": "warning"})
+    if vehicle.get('FuelLevel') is not None and vehicle['FuelLevel'] < 15:
+        alerts.append({"type": "Fuel", "message": f"Low fuel: {vehicle['FuelLevel']}%", "level": "warning"})
     return alerts
 
 # --- API Endpoints ---
@@ -109,21 +88,10 @@ def get_summary():
     if df.empty: return jsonify({"error": "Dataset not loaded"}), 500
     try:
         summary_df = df.groupby('Type')['Status'].value_counts().unstack(fill_value=0)
-        summary_df['Total'] = summary_df.sum(axis=1)
-        
-        summary_list = []
-        for index, row in summary_df.iterrows():
-            summary_item = {
-                'category': index,
-                'statuses': row.to_dict()
-            }
-            summary_list.append(summary_item)
-            
-        # FIX: Explicitly create a dictionary with a 'data' key
+        if 'Total' not in summary_df: summary_df['Total'] = summary_df.sum(axis=1)
+        summary_list = [{'category': index, 'statuses': row.to_dict()} for index, row in summary_df.iterrows()]
         return jsonify({'data': summary_list})
     except Exception as e:
-        print(f"Error in /api/summary: {e}")
-        traceback.print_exc()
         return jsonify({"error": "Could not generate summary"}), 500
 
 @app.route('/api/equipment/type/<type_name>', methods=['GET'])
@@ -133,11 +101,10 @@ def get_equipment_by_type(type_name):
         data = df[df['Type'] == type_name].copy()
         data['RentalStartDate'] = data['RentalStartDate'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else None)
         data['ExpectedReturnDate'] = data['ExpectedReturnDate'].apply(lambda x: x.strftime('%Y-%m-%d') if pd.notna(x) else None)
-        
-        # FIX: Explicitly create a dictionary with a 'data' key
-        return jsonify({'data': data.to_dict(orient='records')})
+        # DEFINITIVE FIX: Convert dataframe to dict, which handles the None conversion correctly
+        clean_data = data.to_dict(orient='records')
+        return jsonify({'data': clean_data})
     except Exception as e:
-        print(f"Error in /api/equipment/type/{type_name}: {e}")
         return jsonify({"error": f"Could not retrieve data for {type_name}"}), 500
 
 @app.route('/api/equipment/id/<equipment_id>', methods=['GET'])
@@ -145,27 +112,13 @@ def get_equipment_by_id(equipment_id):
     if df.empty: return jsonify({"error": "Dataset not loaded"}), 500
     try:
         vehicle_data = df[df['EquipmentID'] == equipment_id]
-        if vehicle_data.empty:
-            return jsonify({"error": "Vehicle not found"}), 404
-            
-        vehicle = vehicle_data.iloc[0].to_dict()
+        if vehicle_data.empty: return jsonify({"error": "Vehicle not found"}), 404
+        vehicle = vehicle_data.iloc[0].to_dict() # .to_dict() is safe now
         vehicle['alerts'] = generate_alerts(vehicle)
-        
-        # Clean up data for JSON serialization
-        for key, value in vehicle.items():
-            if isinstance(value, np.generic):
-                vehicle[key] = value.item()
-            if pd.isna(value):
-                vehicle[key] = None
-        
-        if vehicle.get('RentalStartDate'):
-            vehicle['RentalStartDate'] = vehicle['RentalStartDate'].strftime('%Y-%m-%d')
-        if vehicle.get('ExpectedReturnDate'):
-            vehicle['ExpectedReturnDate'] = vehicle['ExpectedReturnDate'].strftime('%Y-%m-%d')
-            
+        if vehicle.get('RentalStartDate'): vehicle['RentalStartDate'] = vehicle['RentalStartDate'].strftime('%Y-%m-%d')
+        if vehicle.get('ExpectedReturnDate'): vehicle['ExpectedReturnDate'] = vehicle['ExpectedReturnDate'].strftime('%Y-%m-%d')
         return jsonify(vehicle)
     except Exception as e:
-        print(f"Error in /api/equipment/id/{equipment_id}: {e}")
         return jsonify({"error": "Could not retrieve vehicle details"}), 500
 
 @app.route('/api/predict-availability', methods=['POST'])
@@ -174,31 +127,20 @@ def predict_availability():
         return jsonify({"error": "Prediction model is not available."}), 503
     try:
         data = request.json
-        equipment_id = data.get('equipmentId')
-        future_date_str = data.get('futureDate')
-        
-        vehicle_series = df[df['EquipmentID'] == equipment_id].iloc[0]
-        future_date = datetime.strptime(future_date_str, '%Y-%m-%d')
-
-        if vehicle_series['Status'] == 'Available':
+        vehicle = df[df['EquipmentID'] == data.get('equipmentId')].iloc[0]
+        future_date = datetime.strptime(data.get('futureDate'), '%Y-%m-%d')
+        if vehicle['Status'] == 'Available':
             return jsonify({"available": True, "predictedReturnDate": "Now"})
-
-        engine_hours_at_rental = vehicle_series[['EngineHours']]
-        predicted_duration_days = availability_model.predict(engine_hours_at_rental)[0]
-        
-        rental_start_date = pd.to_datetime(vehicle_series['RentalStartDate'])
-        if pd.isna(rental_start_date):
-            return jsonify({"error": "Missing rental start date for prediction."}), 400
-
-        predicted_return_date = rental_start_date + timedelta(days=int(predicted_duration_days))
-
+        if pd.isna(vehicle['RentalStartDate']):
+            return jsonify({"error": "Cannot predict: Missing rental start date."}), 400
+        engine_hours = vehicle[['EngineHours']]
+        duration_days = availability_model.predict(engine_hours)[0]
+        predicted_return = vehicle['RentalStartDate'] + timedelta(days=int(duration_days))
         return jsonify({
-            "available": future_date > predicted_return_date,
-            "predictedReturnDate": predicted_return_date.strftime('%Y-%m-%d')
+            "available": future_date > predicted_return,
+            "predictedReturnDate": predicted_return.strftime('%Y-%m-%d')
         })
     except Exception as e:
-        print(f"Error in /api/predict-availability: {e}")
-        traceback.print_exc()
         return jsonify({"error": "Could not make a prediction."}), 500
 
 # --- Main Execution ---
