@@ -1,0 +1,151 @@
+EquipmentID,Type,Info,CheckInDate,EngineHours,FuelLevel,Status,Latitude,Longitude
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-01-05,1250,85,Working,40.7128,-74.0060
+CAT320-002,Excavator,"20-ton, GPS, Hammer Attachment",2025-01-06,1300,90,Working,34.0522,-118.2437
+CAT320-003,Excavator,"20-ton, GPS, Standard Bucket",2025-01-07,1100,70,Idle,41.8781,-87.6298
+CAT950-001,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-08,2100,95,Working,29.7604,-95.3698
+CAT950-002,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-09,1950,80,In-Transit,33.4484,-112.0740
+CATD6-001,Dozer,"VPAT Blade, GPS Grade Control",2025-01-10,3200,60,Maintenance,39.7392,-104.9903
+CATD6-002,Dozer,"VPAT Blade, GPS Grade Control",2025-01-11,3150,75,Working,47.6062,-122.3321
+CAT140-001,Motor Grader,"14-foot moldboard, GPS",2025-01-12,2800,88,Working,36.1699,-115.1398
+CAT730-001,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-13,4100,92,Working,32.7767,-96.7970
+CAT730-002,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-14,4050,85,Idle,30.2672,-97.7431
+CAT320-004,Excavator,"20-ton, GPS, Standard Bucket",2025-01-15,1280,78,Working,38.9072,-77.0369
+CAT950-003,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-16,2050,91,Working,37.7749,-122.4194
+CATD6-003,Dozer,"VPAT Blade, GPS Grade Control",2025-01-17,3300,65,Idle,34.0522,-118.2437
+CAT140-002,Motor Grader,"14-foot moldboard, GPS",2025-01-18,2900,82,Working,40.7128,-74.0060
+CAT730-003,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-19,4200,94,Working,25.7617,-80.1918
+CAT320-005,Excavator,"20-ton, GPS, Hammer Attachment",2025-01-20,1350,88,In-Transit,36.1146,-86.7816
+CAT950-004,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-21,2150,85,Working,41.8781,-87.6298
+CATD6-004,Dozer,"VPAT Blade, GPS Grade Control",2025-01-22,3250,70,Maintenance,33.7490,-84.3880
+CAT140-003,Motor Grader,"14-foot moldboard, GPS",2025-01-23,2850,90,Working,39.9526,-75.1652
+CAT730-004,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-24,4150,89,Idle,42.3601,-71.0589
+CAT320-006,Excavator,"20-ton, GPS, Standard Bucket",2025-01-25,1400,92,Working,34.0522,-118.2437
+CAT950-005,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-26,2200,93,Working,32.7157,-117.1611
+CATD6-005,Dozer,"VPAT Blade, GPS Grade Control",2025-01-27,3400,72,Working,45.5051,-122.6750
+CAT140-004,Motor Grader,"14-foot moldboard, GPS",2025-01-28,2950,84,Idle,47.6062,-122.3321
+CAT730-005,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-29,4300,96,Working,38.9072,-77.0369
+CAT320-007,Excavator,"20-ton, GPS, Hammer Attachment",2025-01-30,1450,85,Working,39.2904,-76.6122
+CAT950-006,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-31,2250,88,In-Transit,37.3382,-121.8863
+CATD6-006,Dozer,"VPAT Blade, GPS Grade Control",2025-02-01,3350,68,Working,34.0522,-118.2437
+CAT140-005,Motor Grader,"14-foot moldboard, GPS",2025-02-02,3000,86,Maintenance,40.7128,-74.0060
+CAT730-006,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-03,4250,91,Working,29.4241,-98.4936
+CAT320-008,Excavator,"20-ton, GPS, Standard Bucket",2025-02-04,1500,94,Idle,33.4484,-112.0740
+CAT950-007,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-05,2300,89,Working,36.1699,-115.1398
+CATD6-007,Dozer,"VPAT Blade, GPS Grade Control",2025-02-06,3500,75,Working,41.8781,-87.6298
+CAT140-006,Motor Grader,"14-foot moldboard, GPS",2025-02-07,3050,81,Working,30.2672,-97.7431
+CAT730-007,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-08,4400,95,Idle,39.7392,-104.9903
+CAT320-009,Excavator,"20-ton, GPS, Hammer Attachment",2025-02-09,1550,82,Working,47.6062,-122.3321
+CAT950-008,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-10,2350,90,In-Transit,32.7767,-96.7970
+CATD6-008,Dozer,"VPAT Blade, GPS Grade Control",2025-02-11,3450,70,Working,38.9072,-77.0369
+CAT140-007,Motor Grader,"14-foot moldboard, GPS",2025-02-12,3100,88,Maintenance,34.0522,-118.2437
+CAT730-008,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-13,4350,93,Working,25.7617,-80.1918
+CAT320-010,Excavator,"20-ton, GPS, Standard Bucket",2025-02-14,1600,91,Working,40.7128,-74.0060
+CAT950-009,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-15,2400,86,Idle,36.1146,-86.7816
+CATD6-009,Dozer,"VPAT Blade, GPS Grade Control",2025-02-16,3600,78,Working,41.8781,-87.6298
+CAT140-008,Motor Grader,"14-foot moldboard, GPS",2025-02-17,3150,83,Working,33.7490,-84.3880
+CAT730-009,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-18,4500,97,Idle,39.9526,-75.1652
+CAT320-011,Excavator,"20-ton, GPS, Hammer Attachment",2025-02-19,1650,89,Working,42.3601,-71.0589
+CAT950-010,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-20,2450,92,In-Transit,34.0522,-118.2437
+CATD6-010,Dozer,"VPAT Blade, GPS Grade Control",2025-02-21,3550,73,Working,32.7157,-117.1611
+CAT140-009,Motor Grader,"14-foot moldboard, GPS",2025-02-22,3200,87,Maintenance,45.5051,-122.6750
+CAT730-010,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-23,4450,90,Working,47.6062,-122.3321
+CAT320-012,Excavator,"20-ton, GPS, Standard Bucket",2025-02-24,1700,93,Working,38.9072,-77.0369
+CAT950-011,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-25,2500,85,Idle,39.2904,-76.6122
+CATD6-011,Dozer,"VPAT Blade, GPS Grade Control",2025-02-26,3700,80,Working,37.3382,-121.8863
+CAT140-010,Motor Grader,"14-foot moldboard, GPS",2025-02-27,3250,80,Working,34.0522,-118.2437
+CAT730-011,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-28,4600,98,Idle,40.7128,-74.0060
+CAT320-013,Excavator,"20-ton, GPS, Hammer Attachment",2025-03-01,1750,86,Working,29.4241,-98.4936
+CAT950-012,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-02,2550,91,In-Transit,33.4484,-112.0740
+CATD6-012,Dozer,"VPAT Blade, GPS Grade Control",2025-03-03,3650,76,Working,36.1699,-115.1398
+CAT140-011,Motor Grader,"14-foot moldboard, GPS",2025-03-04,3300,89,Maintenance,41.8781,-87.6298
+CAT730-012,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-05,4550,88,Working,30.2672,-97.7431
+CAT320-014,Excavator,"20-ton, GPS, Standard Bucket",2025-03-06,1800,90,Working,39.7392,-104.9903
+CAT950-013,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-07,2600,87,Idle,47.6062,-122.3321
+CATD6-013,Dozer,"VPAT Blade, GPS Grade Control",2025-03-08,3800,82,Working,32.7767,-96.7970
+CAT140-012,Motor Grader,"14-foot moldboard, GPS",2025-03-09,3350,84,Working,38.9072,-77.0369
+CAT730-013,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-10,4700,99,Idle,34.0522,-118.2437
+CAT320-015,Excavator,"20-ton, GPS, Hammer Attachment",2025-03-11,1850,92,Working,25.7617,-80.1918
+CAT950-014,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-12,2650,94,In-Transit,40.7128,-74.0060
+CATD6-014,Dozer,"VPAT Blade, GPS Grade Control",2025-03-13,3750,79,Working,36.1146,-86.7816
+CAT140-013,Motor Grader,"14-foot moldboard, GPS",2025-03-14,3400,91,Maintenance,41.8781,-87.6298
+CAT730-014,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-15,4650,86,Working,33.7490,-84.3880
+CAT320-016,Excavator,"20-ton, GPS, Standard Bucket",2025-03-16,1900,88,Working,39.9526,-75.1652
+CAT950-015,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-17,2700,89,Idle,42.3601,-71.0589
+CATD6-015,Dozer,"VPAT Blade, GPS Grade Control",2025-03-18,3900,84,Working,34.0522,-118.2437
+CAT140-014,Motor Grader,"14-foot moldboard, GPS",2025-03-19,3450,86,Working,32.7157,-117.1611
+CAT730-015,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-20,4800,100,Idle,45.5051,-122.6750
+CAT320-017,Excavator,"20-ton, GPS, Hammer Attachment",2025-03-21,1950,91,Working,47.6062,-122.3321
+CAT950-016,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-22,2750,93,In-Transit,38.9072,-77.0369
+CATD6-016,Dozer,"VPAT Blade, GPS Grade Control",2025-03-23,3850,81,Working,39.2904,-76.6122
+CAT140-015,Motor Grader,"14-foot moldboard, GPS",2025-03-24,3500,92,Maintenance,37.3382,-121.8863
+CAT730-016,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-25,4750,85,Working,34.0522,-118.2437
+CAT320-018,Excavator,"20-ton, GPS, Standard Bucket",2025-03-26,2000,87,Working,40.7128,-74.0060
+CAT950-017,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-27,2800,90,Idle,29.4241,-98.4936
+CATD6-017,Dozer,"VPAT Blade, GPS Grade Control",2025-03-28,4000,85,Working,33.4484,-112.0740
+CAT140-016,Motor Grader,"14-foot moldboard, GPS",2025-03-29,3550,88,Working,36.1699,-115.1398
+CAT730-017,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-30,4900,98,Idle,41.8781,-87.6298
+CAT320-019,Excavator,"20-ton, GPS, Hammer Attachment",2025-03-31,2050,93,Working,30.2672,-97.7431
+CAT950-018,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-01,2850,95,In-Transit,39.7392,-104.9903
+CATD6-018,Dozer,"VPAT Blade, GPS Grade Control",2025-04-02,3950,83,Working,47.6062,-122.3321
+CAT140-017,Motor Grader,"14-foot moldboard, GPS",2025-04-03,3600,93,Maintenance,32.7767,-96.7970
+CAT730-018,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-04,4850,87,Working,38.9072,-77.0369
+CAT320-020,Excavator,"20-ton, GPS, Standard Bucket",2025-04-05,2100,90,Working,34.0522,-118.2437
+CAT950-019,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-06,2900,91,Idle,25.7617,-80.1918
+CATD6-019,Dozer,"VPAT Blade, GPS Grade Control",2025-04-07,4100,86,Working,40.7128,-74.0060
+CAT140-018,Motor Grader,"14-foot moldboard, GPS",2025-04-08,3650,90,Working,36.1146,-86.7816
+CAT730-019,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-09,5000,97,Idle,41.8781,-87.6298
+CAT320-021,Excavator,"20-ton, GPS, Hammer Attachment",2025-04-10,2150,94,Working,33.7490,-84.3880
+CAT950-020,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-11,2950,96,In-Transit,39.9526,-75.1652
+CATD6-020,Dozer,"VPAT Blade, GPS Grade Control",2025-04-12,4050,84,Working,42.3601,-71.0589
+CAT140-019,Motor Grader,"14-foot moldboard, GPS",2025-04-13,3700,94,Maintenance,34.0522,-118.2437
+CAT730-020,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-14,4950,89,Working,32.7157,-117.1611
+CAT320-022,Excavator,"20-ton, GPS, Standard Bucket",2025-04-15,2200,92,Working,45.5051,-122.6750
+CAT950-021,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-16,3000,92,Idle,47.6062,-122.3321
+CATD6-021,Dozer,"VPAT Blade, GPS Grade Control",2025-04-17,4200,88,Working,38.9072,-77.0369
+CAT140-020,Motor Grader,"14-foot moldboard, GPS",2025-04-18,3750,91,Working,39.2904,-76.6122
+CAT730-021,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-19,5100,96,Idle,37.3382,-121.8863
+CAT320-023,Excavator,"20-ton, GPS, Hammer Attachment",2025-04-20,2250,95,Working,34.0522,-118.2437
+CAT950-022,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-21,3050,97,In-Transit,40.7128,-74.0060
+CATD6-022,Dozer,"VPAT Blade, GPS Grade Control",2025-04-22,4150,87,Working,29.4241,-98.4936
+CAT140-021,Motor Grader,"14-foot moldboard, GPS",2025-04-23,3800,95,Maintenance,33.4484,-112.0740
+CAT730-022,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-24,5050,90,Working,36.1699,-115.1398
+CAT320-024,Excavator,"20-ton, GPS, Standard Bucket",2025-04-25,2300,91,Working,41.8781,-87.6298
+CAT950-023,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-26,3100,94,Idle,30.2672,-97.7431
+CATD6-023,Dozer,"VPAT Blade, GPS Grade Control",2025-04-27,4300,89,Working,39.7392,-104.9903
+CAT140-022,Motor Grader,"14-foot moldboard, GPS",2025-04-28,3850,93,Working,47.6062,-122.3321
+CAT730-023,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-29,5200,95,Idle,32.7767,-96.7970
+CAT320-025,Excavator,"20-ton, GPS, Hammer Attachment",2025-04-30,2350,96,Working,38.9072,-77.0369
+CAT950-024,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-01,3150,98,In-Transit,34.0522,-118.2437
+CATD6-024,Dozer,"VPAT Blade, GPS Grade Control",2025-05-02,4250,88,Working,25.7617,-80.1918
+CAT140-023,Motor Grader,"14-foot moldboard, GPS",2025-05-03,3900,96,Maintenance,40.7128,-74.0060
+CAT730-024,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-04,5150,91,Working,36.1146,-86.7816
+CAT320-026,Excavator,"20-ton, GPS, Standard Bucket",2025-05-05,2400,93,Working,41.8781,-87.6298
+CAT950-025,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-06,3200,95,Idle,33.7490,-84.3880
+CATD6-025,Dozer,"VPAT Blade, GPS Grade Control",2025-05-07,4400,90,Working,39.9526,-75.1652
+CAT140-024,Motor Grader,"14-foot moldboard, GPS",2025-05-08,3950,94,Working,42.3601,-71.0589
+CAT730-025,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-09,5300,94,Idle,34.0522,-118.2437
+CAT320-027,Excavator,"20-ton, GPS, Hammer Attachment",2025-05-10,2450,97,Working,32.7157,-117.1611
+CAT950-026,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-11,3250,99,In-Transit,45.5051,-122.6750
+CATD6-026,Dozer,"VPAT Blade, GPS Grade Control",2025-05-12,4350,89,Working,47.6062,-122.3321
+CAT140-025,Motor Grader,"14-foot moldboard, GPS",2025-05-13,4000,97,Maintenance,38.9072,-77.0369
+CAT730-026,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-14,5250,92,Working,39.2904,-76.6122
+CAT320-028,Excavator,"20-ton, GPS, Standard Bucket",2025-05-15,2500,95,Working,37.3382,-121.8863
+CAT950-027,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-16,3300,96,Idle,34.0522,-118.2437
+CATD6-027,Dozer,"VPAT Blade, GPS Grade Control",2025-05-17,4500,91,Working,40.7128,-74.0060
+CAT140-026,Motor Grader,"14-foot moldboard, GPS",2025-05-18,4050,95,Working,29.4241,-98.4936
+CAT730-027,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-19,5400,93,Idle,33.4484,-112.0740
+CAT320-029,Excavator,"20-ton, GPS, Hammer Attachment",2025-05-20,2550,98,Working,36.1699,-115.1398
+CAT950-028,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-21,3350,100,In-Transit,41.8781,-87.6298
+CATD6-028,Dozer,"VPAT Blade, GPS Grade Control",2025-05-22,4450,90,Working,30.2672,-97.7431
+CAT140-027,Motor Grader,"14-foot moldboard, GPS",2025-05-23,4100,98,Maintenance,39.7392,-104.9903
+CAT730-028,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-24,5350,93,Working,47.6062,-122.3321
+CAT320-030,Excavator,"20-ton, GPS, Standard Bucket",2025-05-25,2600,96,Working,32.7767,-96.7970
+CAT950-029,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-26,3400,97,Idle,38.9072,-77.0369
+CATD6-029,Dozer,"VPAT Blade, GPS Grade Control",2025-05-27,4600,92,Working,34.0522,-118.2437
+CAT140-028,Motor Grader,"14-foot moldboard, GPS",2025-05-28,4150,96,Working,25.7617,-80.1918
+CAT730-029,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-29,5500,92,Idle,40.7128,-74.0060
+CAT320-031,Excavator,"20-ton, GPS, Hammer Attachment",2025-05-30,2650,99,Working,36.1146,-86.7816
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-31,3450,99,In-Transit,41.8781,-87.6298
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-06-01,4550,91,Working,33.7490,-84.3880
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-06-02,4200,99,Maintenance,39.9526,-75.1652
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-06-03,5450,94,Working,42.3601,-71.0589

@@ -1,0 +1,78 @@
+EquipmentID,Type,Info,CheckInDate,EngineHours,FuelLevel,Status,Latitude,Longitude
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-01-05,1250,85,Working,40.7128,-74.0060
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-01-15,1280,78,Working,38.9072,-77.0369
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-01-25,1400,92,Working,34.0522,-118.2437
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-02-04,1500,94,Idle,33.4484,-112.0740
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-02-14,1600,91,Working,40.7128,-74.0060
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-02-24,1700,93,Working,38.9072,-77.0369
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-03-06,1800,90,Working,39.7392,-104.9903
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-03-16,1900,88,Working,39.9526,-75.1652
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-03-26,2000,87,Working,40.7128,-74.0060
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-04-05,2100,90,Working,34.0522,-118.2437
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-04-15,2200,92,Working,45.5051,-122.6750
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-04-25,2300,91,Working,41.8781,-87.6298
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-05-05,2400,93,Working,41.8781,-87.6298
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-05-15,2500,95,Working,37.3382,-121.8863
+CAT320-001,Excavator,"20-ton, GPS, Standard Bucket",2025-05-25,2600,96,Working,32.7767,-96.7970
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-08,2100,95,Working,29.7604,-95.3698
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-18,2250,80,In-Transit,33.4484,-112.0740
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-01-28,2400,91,Working,37.7749,-122.4194
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-07,2550,85,Working,41.8781,-87.6298
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-17,2700,93,Working,32.7157,-117.1611
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-02-27,2850,88,In-Transit,37.3382,-121.8863
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-09,3000,89,Working,36.1699,-115.1398
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-19,3150,90,In-Transit,32.7767,-96.7970
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-03-29,3300,86,Idle,36.1146,-86.7816
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-08,3450,92,In-Transit,34.0522,-118.2437
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-18,3600,85,Idle,39.2904,-76.6122
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-04-28,3750,80,Working,34.0522,-118.2437
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-08,3900,94,Working,42.3601,-71.0589
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-18,4050,95,Working,29.4241,-98.4936
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-28,4150,96,Working,25.7617,-80.1918
+CAT950-030,Wheel Loader,"3.5-yard bucket, Ride Control",2025-05-31,3450,99,In-Transit,41.8781,-87.6298
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-01-10,3200,60,Maintenance,39.7392,-104.9903
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-01-20,3350,75,Working,47.6062,-122.3321
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-01-30,3500,65,Idle,34.0522,-118.2437
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-02-09,3650,70,Maintenance,33.7490,-84.3880
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-02-19,3800,72,Working,45.5051,-122.6750
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-02-29,3950,68,Working,34.0522,-118.2437
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-03-10,4100,75,Working,41.8781,-87.6298
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-03-20,4250,78,Working,41.8781,-87.6298
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-03-30,4400,73,Working,32.7157,-117.1611
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-04-09,4550,80,Working,37.3382,-121.8863
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-04-19,4700,76,Working,36.1699,-115.1398
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-04-29,4850,82,Working,32.7767,-96.7970
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-05-09,5000,84,Working,34.0522,-118.2437
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-05-19,5150,81,Working,39.2904,-76.6122
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-05-29,5300,92,Working,34.0522,-118.2437
+CATD6-030,Dozer,"VPAT Blade, GPS Grade Control",2025-06-01,4550,91,Working,33.7490,-84.3880
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-01-12,2800,88,Working,36.1699,-115.1398
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-01-22,2900,82,Working,40.7128,-74.0060
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-02-01,3000,86,Maintenance,40.7128,-74.0060
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-02-11,3100,88,Maintenance,34.0522,-118.2437
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-02-21,3200,87,Maintenance,45.5051,-122.6750
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-03-02,3300,89,Maintenance,41.8781,-87.6298
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-03-12,3400,91,Maintenance,41.8781,-87.6298
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-03-22,3500,92,Maintenance,37.3382,-121.8863
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-04-01,3600,93,Maintenance,32.7767,-96.7970
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-04-11,3700,94,Maintenance,34.0522,-118.2437
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-04-21,3800,95,Maintenance,33.4484,-112.0740
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-05-01,3900,96,Maintenance,40.7128,-74.0060
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-05-11,4000,97,Maintenance,38.9072,-77.0369
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-05-21,4100,98,Maintenance,39.7392,-104.9903
+CAT140-029,Motor Grader,"14-foot moldboard, GPS",2025-05-31,4200,99,Maintenance,39.9526,-75.1652
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-13,4100,92,Working,32.7767,-96.7970
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-01-23,4150,89,Idle,42.3601,-71.0589
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-02,4250,91,Working,29.4241,-98.4936
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-12,4350,93,Working,25.7617,-80.1918
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-02-22,4450,90,Working,47.6062,-122.3321
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-04,4550,88,Working,30.2672,-97.7431
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-14,4650,86,Working,33.7490,-84.3880
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-03-24,4750,85,Working,34.0522,-118.2437
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-03,4850,87,Working,38.9072,-77.0369
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-13,4950,89,Working,32.7157,-117.1611
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-04-23,5050,90,Working,36.1699,-115.1398
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-03,5150,91,Working,36.1146,-86.7816
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-13,5250,92,Working,39.2904,-76.6122
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-05-23,5350,93,Working,47.6062,-122.3321
+CAT730-030,Articulated Truck,"30-ton capacity, Heated Bed",2025-06-02,5450,94,Working,42.3601,-71.0589
