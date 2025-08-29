@@ -10,10 +10,9 @@ def generate_operational_data(
     Generates synthetic operational time-series data for ALL machines
     found in the rental_data.csv file.
 
-    It creates two types of behavior patterns and randomly assigns them:
-    1. Normal Behavior: Fluctuating engine load, simulating active work.
-    2. Anomalous Behavior: Engine running but with prolonged low load,
-       simulating under-utilization.
+    It creates two types of behavior patterns and randomly assigns them,
+    while ensuring specific vehicles are assigned predefined patterns for
+    reliable training and demonstration.
     """
     print("Generating synthetic operational data for all vehicles...")
 
@@ -26,7 +25,7 @@ def generate_operational_data(
 
     all_vehicle_data = []
     
-    # Define the two behavior patterns
+    # --- Define the two behavior patterns ---
     # Pattern 1: Normal, productive work cycle
     work_cycle = np.sin(np.linspace(0, 4 * np.pi, 60)) * 30 + 50
     normal_pattern = np.tile(work_cycle, 2) + np.random.normal(0, 5, 120)
@@ -36,12 +35,12 @@ def generate_operational_data(
     anomalous_pattern = np.ones(120) * 15 + np.random.normal(0, 2, 120)
     anomalous_pattern = np.clip(anomalous_pattern, 5, 25)
 
-    # Ensure our two specific examples for the demo are set correctly
-    # EX-01 will be our reference "normal" machine for training
-    # WL-02 will be our reference "anomalous" machine
+    # --- FIX HERE: Assign predefined behaviors to existing vehicle IDs ---
+    # CAT-D5 will be our reference "normal" machine for training.
+    # CAT-950M will be our reference "anomalous" machine for testing.
     predefined_behaviors = {
-        'EX-01': normal_pattern,
-        'WL-02': anomalous_pattern
+        'CAT-D5': normal_pattern,
+        'CAT-950M': anomalous_pattern
     }
 
     for i, equipment_id in enumerate(equipment_ids):

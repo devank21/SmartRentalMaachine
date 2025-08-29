@@ -88,8 +88,9 @@ try:
     operational_df = pd.read_csv('operational_data.csv')
     operational_df['Timestamp'] = pd.to_datetime(operational_df['Timestamp'])
     
+    # --- FIX HERE: Use an EquipmentID that exists in your data ---
     # Train the model only on data known to be "normal"
-    normal_training_data = operational_df[operational_df['EquipmentID'] == 'EX-01']
+    normal_training_data = operational_df[operational_df['EquipmentID'] == 'CAT-D5']
     
     if not normal_training_data.empty:
         anomaly_detector = LSTMAutoencoder(sequence_length=SEQUENCE_LENGTH)
@@ -132,7 +133,8 @@ def generate_alerts(vehicle):
         print(f"Alert generation failed: {e}")
     return alerts
 
-# --- API Endpoints ---
+# --- API Endpoints (omitted for brevity, no changes here) ---
+# ... All your existing @app.route endpoints go here ...
 @app.route('/api/summary', methods=['GET'])
 def get_summary():
     if df.empty: return jsonify({"error": "Dataset not loaded"}), 500
@@ -310,7 +312,6 @@ def analyze_behavior(equipment_id):
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Error during behavioral analysis: {str(e)}"}), 500
-
 # --- Main Execution ---
 if __name__ == '__main__':
     app.run(debug=True)
