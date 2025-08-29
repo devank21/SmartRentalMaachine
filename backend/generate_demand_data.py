@@ -1,55 +1,57 @@
 import pandas as pd
 import numpy as np
 
-# --- Configuration ---
-N_YEARS = 5
-START_DATE = "2020-01-01"
-END_DATE = str(int(START_DATE[:4]) + N_YEARS - 1) + "-12-31"
-FILENAME = "demand_data.csv"
-
-def generate_demand_data():
+def generate_demand_data(
+    start_date="2022-01-01",
+    end_date="2025-12-31",
+    filename="demand_data.csv"
+):
     """
-    Generates a synthetic time-series dataset for equipment rental demand.
-    The dataset includes trend, yearly seasonality, weekly seasonality, and noise.
+    Generates a synthetic demand dataset for rental equipment.
+
+    This function creates a time series dataset with daily demand values,
+    incorporating trend, weekly and annual seasonalities, and random noise
+    to simulate real-world rental demand patterns.
+
+    Args:
+        start_date (str): The start date for the dataset in 'YYYY-MM-DD' format.
+        end_date (str): The end date for the dataset in 'YYYY-MM-DD' format.
+        filename (str): The name of the CSV file to save the generated data.
     """
     # Create a date range
-    dates = pd.to_datetime(pd.date_range(start=START_DATE, end=END_DATE, freq='D'))
+    dates = pd.to_datetime(pd.date_range(start=start_date, end=end_date, freq='D'))
     n_days = len(dates)
 
-    # --- Component 1: Trend ---
-    # A steady, slightly accelerating growth in demand over time
-    trend = np.linspace(50, 150, n_days) + np.linspace(0, 50, n_days)**1.1
+    # --- 1. Trend Component ---
+    # A gentle upward trend simulating business growth
+    trend = np.linspace(start=100, stop=150, num=n_days)
 
-    # --- Component 2: Yearly Seasonality (e.g., construction season) ---
-    # Higher demand in the middle of the year
-    day_of_year = dates.dayofyear
-    yearly_seasonality = 25 * (1 + np.sin(2 * np.pi * (day_of_year - 90) / 365.25))
-
-    # --- Component 3: Weekly Seasonality ---
-    # Lower demand on weekends
+    # --- 2. Seasonality Components ---
+    # Weekly seasonality: Lower demand on weekends, higher on weekdays
     day_of_week = dates.dayofweek
-    weekly_seasonality = -15 * (1 - np.cos(2 * np.pi * (day_of_week) / 7))
-    # Make Sunday the lowest
-    weekly_seasonality[day_of_week == 6] *= 1.5
+    weekly_seasonality = np.ones(n_days)  # Start with a base of 1
+    weekly_seasonality[day_of_week < 5] = 1.2  # Weekday boost
+    weekly_seasonality[day_of_week >= 5] = 0.8 # Weekend dip
 
-    # --- Component 4: Noise ---
-    # Random fluctuations in demand
-    noise = np.random.normal(0, 10, n_days)
+    # Annual seasonality: Higher demand in spring/summer, lower in winter
+    day_of_year = dates.dayofyear
+    annual_seasonality = 1 + 0.3 * np.sin(2 * np.pi * (day_of_year - 80) / 365.25)
+
+    # --- 3. Noise Component ---
+    # Random fluctuations to make the data more realistic
+    noise = np.random.normal(loc=0, scale=15, size=n_days)
 
     # --- Combine Components ---
-    # The final demand is the sum of all components, ensuring it's non-negative
-    demand = trend + yearly_seasonality + weekly_seasonality + noise
-    demand[demand < 0] = 0
+    # Combine trend, seasonalities, and noise to get the final demand
+    demand = trend * weekly_seasonality * annual_seasonality + noise
+    # Ensure demand is non-negative
+    demand = np.maximum(demand, 0).astype(int)
 
-    # --- Create DataFrame ---
-    df = pd.DataFrame({
-        'ds': dates,
-        'y': np.round(demand).astype(int) # 'ds' and 'y' are required column names for Prophet
-    })
-
-    # --- Save to CSV ---
-    df.to_csv(FILENAME, index=False)
-    print(f"Successfully generated and saved '{FILENAME}' with {len(df)} records.")
+    # --- Create DataFrame and Save ---
+    df = pd.DataFrame({'ds': dates, 'y': demand})
+    df.to_csv(filename, index=False)
+    print(f"Successfully generated synthetic demand data and saved to '{filename}'.")
+    print(f"Dataset contains {len(df)} records from {start_date} to {end_date}.")
 
 if __name__ == "__main__":
     generate_demand_data()

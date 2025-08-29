@@ -1,133 +1,92 @@
 import React, { useState } from "react";
-import axios from "axios";
-import { Line } from "react-chartjs-2";
 import {
-  Chart as ChartJS,
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
   Tooltip,
   Legend,
-  Filler,
-} from "chart.js";
+  ResponsiveContainer,
+} from "recharts";
+import "./DemandForecastView.css";
 
-ChartJS.register(
-  CategoryScale,
-  LinearScale,
-  PointElement,
-  LineElement,
-  Title,
-  Tooltip,
-  Legend,
-  Filler
-);
-
-const API_BASE_URL = "http://127.0.0.1:5000/api";
-
-const DemandForecastView = ({ navigateTo }) => {
+function DemandForecastView() {
   const [forecastData, setForecastData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState("");
+  const [error, setError] = useState(null);
 
-  const handleRunForecast = () => {
+  const fetchForecast = async () => {
     setIsLoading(true);
-    setError("");
-    setForecastData(null);
-    axios
-      .post(`${API_BASE_URL}/predict-demand`)
-      .then((res) => {
-        setForecastData(res.data);
-      })
-      .catch((err) => {
-        console.error("Error running forecast:", err);
-        setError(
-          "Could not run the demand forecast. Please check the console."
-        );
-      })
-      .finally(() => {
-        setIsLoading(false);
+    setError(null);
+    setForecastData(null); // Clear previous results
+    try {
+      const response = await fetch("http://localhost:5000/api/predict-demand", {
+        method: "POST",
       });
-  };
 
-  const chartData = forecastData
-    ? {
-        labels: forecastData.map((d) => d.ds),
-        datasets: [
-          {
-            label: "Actual Demand",
-            data: forecastData.map((d) => d.actual),
-            borderColor: "rgba(0, 0, 0, 0.6)",
-            backgroundColor: "rgba(0, 0, 0, 0.1)",
-            borderWidth: 2,
-            pointRadius: 1,
-          },
-          {
-            label: "Hybrid Prophet-LSTM Forecast",
-            data: forecastData.map((d) => d.yhat),
-            borderColor: "rgba(255, 99, 132, 1)",
-            backgroundColor: "rgba(255, 99, 132, 0.2)",
-            borderWidth: 2,
-            pointRadius: 1,
-            fill: true,
-          },
-        ],
+      const data = await response.json();
+
+      if (!response.ok) {
+        // If server returned an error, use the error message from the JSON response
+        throw new Error(data.error || "Network response was not ok");
       }
-    : null;
 
-  const chartOptions = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: "top",
-      },
-      title: {
-        display: true,
-        text: "Equipment Demand Forecast vs. Actuals",
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Date",
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Rental Units",
-        },
-      },
-    },
+      // Ensure the received data is an array before setting the state
+      if (Array.isArray(data)) {
+        setForecastData(data);
+      } else {
+        // If data is not an array, something is wrong with the API response format
+        console.error("API response is not an array:", data);
+        throw new Error("Received invalid data format from the server.");
+      }
+    } catch (err) {
+      setError(err.message);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
-    <div className="view-container">
-      <button className="back-button" onClick={() => navigateTo("dashboard")}>
-        &larr; Back to Dashboard
+    <div className="demand-forecast-view">
+      <h2>Demand Forecast Analysis</h2>
+      <button onClick={fetchForecast} disabled={isLoading}>
+        {isLoading ? "Forecasting..." : "Run Forecast"}
       </button>
-      <h2>Demand Forecasting</h2>
-      <div className="forecast-controls">
-        <p>
-          This module uses a Hybrid Prophet-LSTM model to forecast equipment
-          demand for the next 90 days.
-        </p>
-        <button onClick={handleRunForecast} disabled={isLoading}>
-          {isLoading ? "Running Forecast..." : "Run New Forecast"}
-        </button>
-      </div>
 
-      {error && <div className="error-message">{error}</div>}
+      {error && <p className="error-message">Error: {error}</p>}
 
-      {chartData && (
+      {forecastData && forecastData.length > 0 && (
         <div className="chart-container">
-          <Line options={chartOptions} data={chartData} />
+          <ResponsiveContainer width="100%" height={400}>
+            <LineChart data={forecastData}>
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis dataKey="ds" />
+              <YAxis />
+              <Tooltip />
+              <Legend />
+              <Line
+                type="monotone"
+                dataKey="yhat"
+                stroke="#8884d8"
+                name="Forecast"
+              />
+              <Line
+                type="monotone"
+                dataKey="y"
+                stroke="#82ca9d"
+                name="Historical"
+              />
+            </LineChart>
+          </ResponsiveContainer>
         </div>
+      )}
+
+      {forecastData && forecastData.length === 0 && (
+        <p>No forecast data available.</p>
       )}
     </div>
   );
-};
+}
 
 export default DemandForecastView;

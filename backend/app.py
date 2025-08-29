@@ -7,32 +7,47 @@ from datetime import datetime, timedelta
 import numpy as np
 import math
 import traceback
+import os
+
+# --- Custom Model Imports ---
+from demand_forecasting_model import HybridProphetLSTM
+from behavioral_anomaly_model import LSTMAutoencoder
 
 # --- App Initialization ---
 app = Flask(__name__)
 CORS(app)
 
 # --- Data Loading and Preparation ---
+# Check for necessary data files on startup
+if not os.path.exists('demand_data.csv'):
+    print("FATAL: demand_data.csv not found. Please run generate_demand_data.py first.")
+if not os.path.exists('operational_data.csv'):
+    print("FATAL: operational_data.csv not found. Please run generate_operational_data.py first.")
+
 try:
     df = pd.read_csv('rental_data.csv', na_values=['N/A', 'NaN', ''])
     df = df.replace({np.nan: None})
     df['RentalStartDate'] = pd.to_datetime(df['RentalStartDate'], errors='coerce')
     df['ExpectedReturnDate'] = pd.to_datetime(df['ExpectedReturnDate'], errors='coerce')
-    print("CSV data loaded and cleaned successfully.")
+    print("Rental data loaded and cleaned successfully.")
 except FileNotFoundError:
     print("FATAL: rental_data.csv not found. The app cannot run.")
     df = pd.DataFrame()
 
-# --- Machine Learning Models ---
+# --- Machine Learning Models Initialization ---
 anomaly_model = None
 availability_model = None
 pricing_model = None
 is_availability_model_trained = False
 is_pricing_model_trained = False
+anomaly_detector = None
+operational_df = None
+SEQUENCE_LENGTH = 30 # Must match the behavioral model's sequence length
 
+# --- Train Core Models ---
 if not df.empty:
     try:
-        # Anomaly Detection Model
+        # 1. Telemetry Anomaly Detection Model (Isolation Forest)
         anomaly_model = IsolationForest(contamination=0.05, random_state=42)
         telemetry_features = ['EngineHours', 'FuelLevel', 'EngineLoad']
         for col in telemetry_features:
@@ -40,9 +55,9 @@ if not df.empty:
             df[col].fillna(df[col].median(), inplace=True)
         anomaly_model.fit(df[telemetry_features])
         df['IsAnomalous'] = anomaly_model.predict(df[telemetry_features])
-        print("Anomaly detection model trained successfully.")
+        print("Telemetry anomaly detection model (Isolation Forest) trained successfully.")
 
-        # Predictive Availability Model
+        # 2. Predictive Availability Model (Linear Regression)
         availability_model = LinearRegression()
         if 'ActualReturnDate' in df.columns:
             df_train_avail = df.dropna(subset=['ActualReturnDate', 'RentalStartDate', 'EngineHours']).copy()
@@ -54,8 +69,8 @@ if not df.empty:
                     availability_model.fit(X_train_avail, y_train_avail)
                     is_availability_model_trained = True
                     print("Predictive availability model trained successfully.")
-        
-        # Dynamic Pricing Model
+
+        # 3. Dynamic Pricing Model (Linear Regression)
         pricing_model = LinearRegression()
         if 'RentalPrice' in df.columns:
             df_train_price = df.dropna(subset=['RentalPrice', 'EngineHours']).copy()
@@ -66,7 +81,29 @@ if not df.empty:
                 print("Dynamic pricing model trained successfully.")
 
     except Exception as e:
-        print(f"Error during model training: {e}")
+        print(f"Error during core model training: {e}")
+
+# --- Train Behavioral Anomaly Detection Model (LSTM Autoencoder) ---
+try:
+    operational_df = pd.read_csv('operational_data.csv')
+    operational_df['Timestamp'] = pd.to_datetime(operational_df['Timestamp'])
+    
+    # Train the model only on data known to be "normal"
+    normal_training_data = operational_df[operational_df['EquipmentID'] == 'EX-01']
+    
+    if not normal_training_data.empty:
+        anomaly_detector = LSTMAutoencoder(sequence_length=SEQUENCE_LENGTH)
+        anomaly_detector.train(normal_training_data)
+        print("Behavioral anomaly detection model (LSTM Autoencoder) trained successfully.")
+    else:
+        print("Could not find normal operational data to train behavioral anomaly detector.")
+
+except FileNotFoundError:
+    print("WARNING: operational_data.csv not found. Behavioral anomaly detection will be disabled.")
+except Exception as e:
+    print(f"Error initializing behavioral anomaly detection model: {e}")
+    traceback.print_exc()
+
 
 # --- Helper Functions ---
 def haversine(lat1, lon1, lat2, lon2):
@@ -84,10 +121,10 @@ def generate_alerts(vehicle):
         radius = vehicle.get('JobSiteRadius')
         if dist is not None and radius is not None and isinstance(radius, (int, float)) and dist > radius:
             alerts.append({"type": "Geofence", "message": f"Vehicle is {dist:.2f} km from job site.", "level": "critical"})
-        
+
         if vehicle.get('IsAnomalous') == -1:
-            alerts.append({"type": "Telemetry", "message": "Anomalous sensor readings.", "level": "warning"})
-        
+            alerts.append({"type": "Telemetry", "message": "Anomalous sensor readings detected.", "level": "warning"})
+
         fuel = vehicle.get('FuelLevel')
         if fuel is not None and isinstance(fuel, (int, float)) and fuel < 15:
             alerts.append({"type": "Fuel", "message": f"Low fuel: {fuel}%", "level": "warning"})
@@ -135,44 +172,30 @@ def get_equipment_by_id(equipment_id):
         return jsonify({"error": "Could not retrieve vehicle details"}), 500
 
 @app.route('/api/predict-availability', methods=['POST'])
-@app.route('/api/predict-availability', methods=['POST'])
 def predict_availability():
     try:
         data = request.json
-        print("Incoming data:", data)
+        date_str = data['futureDate'].strip()
+        future_date = None
+        for fmt in ['%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d']:
+            try:
+                future_date = datetime.strptime(date_str, fmt)
+                break
+            except ValueError:
+                continue
+        if future_date is None:
+            return jsonify({"error": f"Invalid date format. Got '{date_str}', expected DD-MM-YYYY"}), 400
 
-        # Handle multiple date formats and strip whitespace
-        try:
-            date_str = data['futureDate'].strip()
-            future_date = None
-            for fmt in ['%d-%m-%Y', '%d/%m/%Y', '%Y-%m-%d']:
-                try:
-                    future_date = datetime.strptime(date_str, fmt)
-                    break
-                except ValueError:
-                    continue
-            if future_date is None:
-                return jsonify({"error": f"Invalid date format. Got '{date_str}', expected DD-MM-YYYY"}), 400
-        except Exception:
-            return jsonify({"error": "Invalid date format."}), 400
-
-        # Get the vehicle details
         vehicle_data = df[df['EquipmentID'] == data['equipmentId']]
-        if vehicle_data.empty:
-            return jsonify({"error": "Equipment not found"}), 404
-
+        if vehicle_data.empty: return jsonify({"error": "Equipment not found"}), 404
         vehicle = vehicle_data.iloc[0]
-        print("Selected vehicle:", vehicle.to_dict())
 
-        # If machine is already available now
         if vehicle['Status'] == 'Available':
             return jsonify({"available": True, "predictedReturnDate": "Now"})
 
-        # If no RentalStartDate
         if pd.isna(vehicle['RentalStartDate']):
             return jsonify({"error": "No rental start date."}), 422
 
-        # Predict using trained model if available
         predicted_return = None
         if is_availability_model_trained and not pd.isna(vehicle['EngineHours']):
             try:
@@ -181,7 +204,6 @@ def predict_availability():
             except Exception as e:
                 print("Model prediction error:", e)
 
-        # Fallback logic: ExpectedReturnDate → Average duration
         if predicted_return is None:
             if not pd.isna(vehicle['ExpectedReturnDate']):
                 predicted_return = vehicle['ExpectedReturnDate']
@@ -189,13 +211,8 @@ def predict_availability():
                 avg_duration = (df['ExpectedReturnDate'] - df['RentalStartDate']).dt.days.mean()
                 predicted_return = vehicle['RentalStartDate'] + timedelta(days=int(avg_duration))
 
-        # Compare future date with predicted return date
         available = future_date > predicted_return
-
-        return jsonify({
-            "available": bool(available),
-            "predictedReturnDate": predicted_return.strftime('%Y-%m-%d')
-        })
+        return jsonify({"available": bool(available), "predictedReturnDate": predicted_return.strftime('%Y-%m-%d')})
 
     except Exception as e:
         traceback.print_exc()
@@ -248,6 +265,51 @@ def predict_price():
     except Exception as e:
         traceback.print_exc()
         return jsonify({"error": f"Error predicting price: {e}"}), 500
+
+@app.route('/api/predict-demand', methods=['POST'])
+def predict_demand():
+    try:
+        model = HybridProphetLSTM(data_path='demand_data.csv')
+        model.train()
+        forecast_df = model.predict(periods=90)
+        forecast_df = forecast_df.replace({np.nan: None})
+        forecast_df['ds'] = forecast_df['ds'].dt.strftime('%Y-%m-%d')
+        return jsonify(forecast_df.to_dict(orient='records'))
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": f"Error during demand prediction: {str(e)}"}), 500
+
+@app.route('/api/analyze-behavior/<equipment_id>', methods=['POST'])
+def analyze_behavior(equipment_id):
+    if anomaly_detector is None or operational_df is None:
+        return jsonify({"error": "Anomaly detection service is not available."}), 503
+
+    try:
+        vehicle_data = operational_df[operational_df['EquipmentID'] == equipment_id].copy()
+        vehicle_data.sort_values(by='Timestamp', inplace=True)
+        
+        if len(vehicle_data) < SEQUENCE_LENGTH:
+            return jsonify({"error": f"Not enough historical data. Need {SEQUENCE_LENGTH} records, found {len(vehicle_data)}."}), 400
+            
+        latest_sequence_df = vehicle_data.tail(SEQUENCE_LENGTH)
+        reconstruction_error = anomaly_detector.predict(latest_sequence_df)
+        threshold = anomaly_detector.training_mae_loss * 2.5
+        is_anomaly = reconstruction_error > threshold
+
+        sequence_for_chart = latest_sequence_df[['Timestamp', 'EngineLoad']].to_dict(orient='records')
+        for record in sequence_for_chart:
+            record['Timestamp'] = record['Timestamp'].strftime('%H:%M:%S')
+
+        return jsonify({
+            "is_anomaly": bool(is_anomaly),
+            "reconstruction_error": float(reconstruction_error),
+            "threshold": float(threshold),
+            "sequence_data": sequence_for_chart
+        })
+
+    except Exception as e:
+        traceback.print_exc()
+        return jsonify({"error": f"Error during behavioral analysis: {str(e)}"}), 500
 
 # --- Main Execution ---
 if __name__ == '__main__':

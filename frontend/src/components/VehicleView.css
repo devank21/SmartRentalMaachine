@@ -1,0 +1,252 @@
+.view-container {
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.back-button {
+  background: none;
+  border: 1px solid #ccc;
+  padding: 8px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  margin-bottom: 1.5rem;
+  transition: all 0.2s;
+}
+
+.back-button:hover {
+  background-color: #f0f0f0;
+  border-color: #999;
+}
+
+.vehicle-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 1.5rem;
+}
+
+.vehicle-header h2 {
+  margin: 0;
+  color: #333;
+}
+
+.return-button {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.2s ease;
+}
+
+.return-button:hover {
+  background-color: #0056b3;
+}
+
+.vehicle-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 1.5rem;
+}
+
+.vehicle-card {
+  background-color: white;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.vehicle-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.vehicle-card h3 {
+  margin-top: 0;
+  border-bottom: 2px solid #eee;
+  padding-bottom: 0.5rem;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+.map-card {
+  min-height: 400px;
+}
+
+.telemetry-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.telemetry-item:last-child {
+  border-bottom: none;
+}
+
+.telemetry-item span {
+  color: #555;
+}
+
+.progress-bar {
+  width: 50%;
+  background-color: #e9ecef;
+  border-radius: 0.25rem;
+  overflow: hidden;
+}
+
+.progress-bar div {
+  background-color: #007bff;
+  color: white;
+  text-align: center;
+  padding: 2px 0;
+  font-size: 0.8rem;
+  white-space: nowrap;
+  transition: width 0.5s ease-in-out;
+}
+
+/* --- REVISED SYSTEM ALERT STYLES --- */
+.alerts-card ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem; /* Adds space between alerts */
+}
+
+.alerts-card li {
+  padding: 1rem;
+  border-radius: 5px;
+  display: flex;
+  align-items: flex-start; /* Aligns icon/text to the top */
+  gap: 0.75rem; /* Space between icon and text */
+}
+
+/* Add icons using a pseudo-element */
+.alerts-card li::before {
+  font-weight: 900;
+  font-size: 1.1rem;
+  line-height: 1.4; /* Helps vertically align the icon */
+}
+
+.alert-critical {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}
+
+.alert-critical::before {
+  content: "!"; /* Exclamation mark icon */
+}
+
+.alert-warning {
+  background-color: #fff3cd;
+  color: #856404;
+  border: 1px solid #ffeeba;
+}
+
+.alert-warning::before {
+  content: "⚠"; /* Warning triangle icon */
+}
+
+.alerts-card li strong {
+  flex-shrink: 0; /* Prevents the "Type:" text from wrapping */
+}
+
+.prediction-card .prediction-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 1rem;
+  align-items: center;
+}
+
+.prediction-card input {
+  padding: 8px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.prediction-card button {
+  background-color: #17a2b8;
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.prediction-result {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 5px;
+  text-align: center;
+}
+
+.prediction-result.error {
+  background-color: #f8d7da;
+  color: #721c24;
+}
+.prediction-result.available,
+.prediction-result.success {
+  background-color: #d4edda;
+  color: #155724;
+}
+.prediction-result.in-use {
+  background-color: #fff3cd;
+  color: #856404;
+}
+
+/* Styles for Behavioral Analysis Section */
+.behavioral-analysis button {
+  background-color: #28a745;
+}
+
+.behavioral-analysis button:hover:not(:disabled) {
+  background-color: #218838;
+}
+
+.behavioral-analysis button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.analysis-result {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid #ddd;
+}
+
+.result-summary {
+  padding: 1rem;
+  border-radius: 5px;
+  font-size: 1.1rem;
+  margin-bottom: 1rem;
+  text-align: center;
+}
+
+.result-summary.normal {
+  background-color: #d4edda;
+  color: #155724;
+  border: 1px solid #c3e6cb;
+}
+
+.result-summary.anomaly {
+  background-color: #f8d7da;
+  color: #721c24;
+  border: 1px solid #f5c6cb;
+}

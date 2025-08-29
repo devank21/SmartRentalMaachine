@@ -1,10 +1,21 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
-import "leaflet/dist/leaflet.css";
 import L from "leaflet";
+import "leaflet/dist/leaflet.css";
+import {
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  ResponsiveContainer,
+} from "recharts";
+import "./VehicleView.css";
 
-// Leaflet Icon Fix
+// --- Leaflet Icon Fix ---
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -22,7 +33,9 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
 
   // State for new features
   const [pricePrediction, setPricePrediction] = useState(null);
-  const [duration, setDuration] = useState(90); // Default duration for price prediction
+  const [duration, setDuration] = useState(90); // Default duration
+  const [analysisResult, setAnalysisResult] = useState(null);
+  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const fetchVehicleData = () => {
     axios
@@ -73,10 +86,32 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
     axios
       .post(`${API_BASE_URL}/return-vehicle`, { equipmentId })
       .then((res) => {
-        // Refresh the vehicle data to show its new "Available" status
-        fetchVehicleData();
+        fetchVehicleData(); // Refresh data to show "Available" status
       })
       .catch((err) => console.error("Error returning vehicle:", err));
+  };
+
+  const handleAnalyzeBehavior = async () => {
+    setIsAnalyzing(true);
+    setAnalysisResult(null);
+    try {
+      const response = await fetch(
+        `${API_BASE_URL}/analyze-behavior/${equipmentId}`,
+        {
+          method: "POST",
+        }
+      );
+      const data = await response.json();
+      if (!response.ok) {
+        throw new Error(data.error || "Failed to analyze behavior.");
+      }
+      setAnalysisResult(data);
+    } catch (error) {
+      console.error("Analysis Error:", error);
+      setAnalysisResult({ error: error.message });
+    } finally {
+      setIsAnalyzing(false);
+    }
   };
 
   const renderPredictionResult = (pred) => {
@@ -120,7 +155,6 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
       </button>
       <div className="vehicle-header">
         <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
-        {/* Early Return Button */}
         {vehicle.Status === "In-Use" && (
           <button className="return-button" onClick={handleReturnVehicle}>
             Mark as Returned
@@ -134,7 +168,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
           <MapContainer
             center={[vehicle.Latitude, vehicle.Longitude]}
             zoom={14}
-            style={{ height: "100%", width: "100%" }}
+            style={{ height: "50%", width: "50%" }}
           >
             <TileLayer url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png" />
             <Marker position={[vehicle.Latitude, vehicle.Longitude]}>
@@ -143,7 +177,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             {vehicle.JobSiteLat && vehicle.JobSiteLon && (
               <Circle
                 center={[vehicle.JobSiteLat, vehicle.JobSiteLon]}
-                radius={vehicle.JobSiteRadius * 1000}
+                radius={vehicle.JobSiteRadius * 1000} // Convert km to meters
                 pathOptions={{ color: "green", fillColor: "green" }}
               />
             )}
@@ -220,6 +254,79 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             <button onClick={handlePricePrediction}>Predict Price</button>
           </div>
           {renderPriceResult(pricePrediction)}
+        </div>
+
+        {/* --- New Behavioral Analysis Section --- */}
+        <div className="vehicle-card behavioral-analysis">
+          <h3>Behavioral Anomaly Detection</h3>
+          <p>
+            Analyze the machine's recent operational pattern to detect
+            inefficient use, such as prolonged idling under no load.
+          </p>
+          <button onClick={handleAnalyzeBehavior} disabled={isAnalyzing}>
+            {isAnalyzing ? "Analyzing..." : "Analyze Recent Behavior"}
+          </button>
+
+          {analysisResult && (
+            <div className="analysis-result">
+              <h4>Analysis Complete</h4>
+              {analysisResult.error ? (
+                <div className="result-summary error">
+                  {analysisResult.error}
+                </div>
+              ) : (
+                <>
+                  <div
+                    className={`result-summary ${
+                      analysisResult.is_anomaly ? "anomaly" : "normal"
+                    }`}
+                  >
+                    <strong>Status:</strong>{" "}
+                    {analysisResult.is_anomaly
+                      ? "Anomaly Detected (Under-Utilization)"
+                      : "Normal Operation"}
+                  </div>
+                  <p>
+                    <strong>Reconstruction Error:</strong>{" "}
+                    {analysisResult.reconstruction_error.toFixed(4)}
+                    <br />
+                    <em>
+                      (Anomaly Threshold: &gt;
+                      {analysisResult.threshold.toFixed(4)})
+                    </em>
+                  </p>
+                  <p>
+                    {analysisResult.is_anomaly
+                      ? "The machine's recent activity pattern is unusual and suggests it may be running without performing productive work."
+                      : "The machine's recent activity aligns with patterns of normal, productive operation."}
+                  </p>
+
+                  <h5>Analyzed Engine Load Sequence</h5>
+                  <ResponsiveContainer width="100%" height={200}>
+                    <LineChart data={analysisResult.sequence_data}>
+                      <CartesianGrid strokeDasharray="3 3" />
+                      <XAxis dataKey="Timestamp" />
+                      <YAxis
+                        label={{
+                          value: "Engine Load %",
+                          angle: -90,
+                          position: "insideLeft",
+                        }}
+                      />
+                      <Tooltip />
+                      <Legend />
+                      <Line
+                        type="monotone"
+                        dataKey="EngineLoad"
+                        stroke="#8884d8"
+                        name="Actual Load"
+                      />
+                    </LineChart>
+                  </ResponsiveContainer>
+                </>
+              )}
+            </div>
+          )}
         </div>
       </div>
     </div>
