@@ -1,0 +1,63 @@
+.dashboard-view {
+  padding: 2rem;
+  animation: fadeIn 0.5s ease-in-out;
+}
+
+.dashboard-view h2 {
+  margin-top: 0;
+  margin-bottom: 1.5rem;
+  color: #333;
+}
+
+.dashboard-grid {
+  display: grid;
+  /* Creates a responsive grid of cards */
+  grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+  gap: 1.5rem;
+}
+
+.pie-chart-card {
+  background-color: #ffffff;
+  padding: 1.5rem;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.pie-chart-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 6px 12px rgba(0, 0, 0, 0.08);
+}
+
+.pie-chart-card h3 {
+  text-align: center;
+  margin-top: 0;
+  margin-bottom: 1rem;
+  color: #495057;
+}
+
+/* Improve readability of Recharts labels */
+.recharts-legend-item-text {
+  color: #333 !important;
+}
+
+.recharts-text.recharts-label {
+  fill: #fff;
+  font-weight: bold;
+  font-size: 0.9rem;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* General styles for loading and error messages */
+.loading,
+.error-message {
+  padding: 2rem;
+  text-align: center;
+  font-size: 1.2rem;
+  color: #555;
+}
+
+.error-message {
+  color: #d9534f;
+}

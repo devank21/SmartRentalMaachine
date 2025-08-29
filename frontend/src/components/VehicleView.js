@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from "react";
+import React, { useState, useEffect } from "react";
 import axios from "axios";
 import { MapContainer, TileLayer, Marker, Popup, Circle } from "react-leaflet";
-import L from "leaflet";
 import "leaflet/dist/leaflet.css";
+import L from "leaflet";
 import {
   LineChart,
   Line,
@@ -13,9 +13,9 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
-import "./VehicleView.css";
+import "./VehicleView.css"; // New CSS file for this component
 
-// --- Leaflet Icon Fix ---
+// Leaflet Icon Fix
 delete L.Icon.Default.prototype._getIconUrl;
 L.Icon.Default.mergeOptions({
   iconRetinaUrl: require("leaflet/dist/images/marker-icon-2x.png"),
@@ -23,37 +23,46 @@ L.Icon.Default.mergeOptions({
   shadowUrl: require("leaflet/dist/images/marker-shadow.png"),
 });
 
-const API_BASE_URL = "http://127.0.0.1:5000/api";
+const API_BASE_URL = "http://localhost:5000/api";
 
 const VehicleView = ({ equipmentId, category, navigateTo }) => {
   const [vehicle, setVehicle] = useState(null);
   const [error, setError] = useState("");
   const [prediction, setPrediction] = useState(null);
   const [date, setDate] = useState("");
-
-  // State for new features
   const [pricePrediction, setPricePrediction] = useState(null);
-  const [duration, setDuration] = useState(90); // Default duration
-  const [analysisResult, setAnalysisResult] = useState(null);
+  const [duration, setDuration] = useState(90);
+  const [behaviorAnalysis, setBehaviorAnalysis] = useState(null); // State for new feature
   const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   const fetchVehicleData = () => {
     axios
       .get(`${API_BASE_URL}/equipment/id/${equipmentId}`)
       .then((res) => setVehicle(res.data))
-      .catch((err) => {
-        console.error(`Error fetching vehicle ${equipmentId}:`, err);
-        setError("Could not load vehicle details.");
-      });
+      .catch((err) => setError("Could not load vehicle details."));
   };
 
   useEffect(() => {
     fetchVehicleData();
   }, [equipmentId]);
 
+  const handleBehaviorAnalysis = () => {
+    setIsAnalyzing(true);
+    setBehaviorAnalysis(null);
+    axios
+      .get(`${API_BASE_URL}/analyze-behavior/${equipmentId}`)
+      .then((res) => setBehaviorAnalysis(res.data))
+      .catch((err) =>
+        setBehaviorAnalysis({
+          error: err.response?.data?.error || "Analysis failed.",
+        })
+      )
+      .finally(() => setIsAnalyzing(false));
+  };
+
+  // Other handlers (unchanged)
   const handleAvailabilityPrediction = () => {
     if (!date) return;
-    setPrediction(null);
     axios
       .post(`${API_BASE_URL}/predict-availability`, {
         equipmentId,
@@ -66,9 +75,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
         })
       );
   };
-
   const handlePricePrediction = () => {
-    setPricePrediction(null);
     axios
       .post(`${API_BASE_URL}/predict-price`, {
         engineHours: vehicle.EngineHours,
@@ -81,39 +88,13 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
         })
       );
   };
-
   const handleReturnVehicle = () => {
     axios
       .post(`${API_BASE_URL}/return-vehicle`, { equipmentId })
-      .then((res) => {
-        fetchVehicleData(); // Refresh data to show "Available" status
-      })
-      .catch((err) => console.error("Error returning vehicle:", err));
+      .then(() => fetchVehicleData());
   };
 
-  const handleAnalyzeBehavior = async () => {
-    setIsAnalyzing(true);
-    setAnalysisResult(null);
-    try {
-      const response = await fetch(
-        `${API_BASE_URL}/analyze-behavior/${equipmentId}`,
-        {
-          method: "POST",
-        }
-      );
-      const data = await response.json();
-      if (!response.ok) {
-        throw new Error(data.error || "Failed to analyze behavior.");
-      }
-      setAnalysisResult(data);
-    } catch (error) {
-      console.error("Analysis Error:", error);
-      setAnalysisResult({ error: error.message });
-    } finally {
-      setIsAnalyzing(false);
-    }
-  };
-
+  // Render helpers (unchanged)
   const renderPredictionResult = (pred) => {
     if (!pred) return null;
     if (pred.error)
@@ -121,16 +102,15 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
     if (pred.available)
       return (
         <div className="prediction-result available">
-          Predicted to be AVAILABLE on {date}.
+          Predicted AVAILABLE on {date}.
         </div>
       );
     return (
       <div className="prediction-result in-use">
-        Predicted to be IN-USE. Expected return: {pred.predictedReturnDate}.
+        Predicted IN-USE. Expected return: {pred.predictedReturnDate}.
       </div>
     );
   };
-
   const renderPriceResult = (price) => {
     if (!price) return null;
     if (price.error)
@@ -147,12 +127,6 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
 
   return (
     <div className="view-container">
-      <button
-        className="back-button"
-        onClick={() => navigateTo("category", { category: vehicle.Type })}
-      >
-        &larr; Back to {vehicle.Type}
-      </button>
       <div className="vehicle-header">
         <h2>Vehicle Details: {vehicle.EquipmentID}</h2>
         {vehicle.Status === "In-Use" && (
@@ -163,6 +137,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
       </div>
 
       <div className="vehicle-grid">
+        {/* Map, Telemetry, and Alerts (grid items 1, 2, 3) */}
         <div className="vehicle-card map-card">
           <h3>Live Location & Geofence</h3>
           <MapContainer
@@ -177,7 +152,7 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             {vehicle.JobSiteLat && vehicle.JobSiteLon && (
               <Circle
                 center={[vehicle.JobSiteLat, vehicle.JobSiteLon]}
-                radius={vehicle.JobSiteRadius * 1000} // Convert km to meters
+                radius={vehicle.JobSiteRadius * 1000}
                 pathOptions={{ color: "green", fillColor: "green" }}
               />
             )}
@@ -228,9 +203,70 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             <p>No active alerts.</p>
           )}
         </div>
+
+        {/* Behavioral Anomaly Detection Card (grid item 4) */}
+        <div className="vehicle-card prediction-card full-width">
+          <h3>Behavioral Anomaly Detection (LSTM Autoencoder)</h3>
+          <p>
+            Analyze the last 30 operational data points to detect unusual
+            patterns in engine behavior.
+          </p>
+          <div className="prediction-controls">
+            <button onClick={handleBehaviorAnalysis} disabled={isAnalyzing}>
+              {isAnalyzing ? "Analyzing..." : "Run Behavioral Analysis"}
+            </button>
+          </div>
+          {behaviorAnalysis && (
+            <div className="behavior-analysis-result">
+              {behaviorAnalysis.error ? (
+                <p className="error-message">{behaviorAnalysis.error}</p>
+              ) : (
+                <>
+                  <div
+                    className={`analysis-summary ${
+                      behaviorAnalysis.is_anomaly ? "anomaly" : "normal"
+                    }`}
+                  >
+                    Status:{" "}
+                    {behaviorAnalysis.is_anomaly
+                      ? "Anomaly Detected"
+                      : "Normal Operation"}
+                  </div>
+                  <p>
+                    <strong>Reconstruction Error:</strong>{" "}
+                    {behaviorAnalysis.reconstruction_error.toFixed(4)}
+                  </p>
+                  <p>
+                    <strong>Anomaly Threshold:</strong>{" "}
+                    {behaviorAnalysis.threshold.toFixed(4)}
+                  </p>
+                  <div className="chart-container-small">
+                    <ResponsiveContainer width="100%" height={200}>
+                      <LineChart data={behaviorAnalysis.sequence_data}>
+                        <CartesianGrid strokeDasharray="3 3" />
+                        <XAxis dataKey="Timestamp" />
+                        <YAxis />
+                        <Tooltip />
+                        <Legend />
+                        <Line
+                          type="monotone"
+                          dataKey="EngineLoad"
+                          name="Engine Load (%)"
+                          stroke="#8884d8"
+                          dot={false}
+                        />
+                      </LineChart>
+                    </ResponsiveContainer>
+                  </div>
+                </>
+              )}
+            </div>
+          )}
+        </div>
+
+        {/* Availability and Pricing (grid items 5, 6) */}
         <div className="vehicle-card prediction-card">
           <h3>Predict Availability</h3>
-          <p>Check if this machine will be free for a future date.</p>
           <div className="prediction-controls">
             <input
               type="date"
@@ -243,9 +279,8 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
         </div>
         <div className="vehicle-card prediction-card">
           <h3>Dynamic Price Estimation</h3>
-          <p>Estimate the rental price based on usage and duration.</p>
           <div className="prediction-controls">
-            <label>Rental Duration (days):</label>
+            <label>Duration (days):</label>
             <input
               type="number"
               value={duration}
@@ -254,79 +289,6 @@ const VehicleView = ({ equipmentId, category, navigateTo }) => {
             <button onClick={handlePricePrediction}>Predict Price</button>
           </div>
           {renderPriceResult(pricePrediction)}
-        </div>
-
-        {/* --- New Behavioral Analysis Section --- */}
-        <div className="vehicle-card behavioral-analysis">
-          <h3>Behavioral Anomaly Detection</h3>
-          <p>
-            Analyze the machine's recent operational pattern to detect
-            inefficient use, such as prolonged idling under no load.
-          </p>
-          <button onClick={handleAnalyzeBehavior} disabled={isAnalyzing}>
-            {isAnalyzing ? "Analyzing..." : "Analyze Recent Behavior"}
-          </button>
-
-          {analysisResult && (
-            <div className="analysis-result">
-              <h4>Analysis Complete</h4>
-              {analysisResult.error ? (
-                <div className="result-summary error">
-                  {analysisResult.error}
-                </div>
-              ) : (
-                <>
-                  <div
-                    className={`result-summary ${
-                      analysisResult.is_anomaly ? "anomaly" : "normal"
-                    }`}
-                  >
-                    <strong>Status:</strong>{" "}
-                    {analysisResult.is_anomaly
-                      ? "Anomaly Detected (Under-Utilization)"
-                      : "Normal Operation"}
-                  </div>
-                  <p>
-                    <strong>Reconstruction Error:</strong>{" "}
-                    {analysisResult.reconstruction_error.toFixed(4)}
-                    <br />
-                    <em>
-                      (Anomaly Threshold: &gt;
-                      {analysisResult.threshold.toFixed(4)})
-                    </em>
-                  </p>
-                  <p>
-                    {analysisResult.is_anomaly
-                      ? "The machine's recent activity pattern is unusual and suggests it may be running without performing productive work."
-                      : "The machine's recent activity aligns with patterns of normal, productive operation."}
-                  </p>
-
-                  <h5>Analyzed Engine Load Sequence</h5>
-                  <ResponsiveContainer width="100%" height={200}>
-                    <LineChart data={analysisResult.sequence_data}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="Timestamp" />
-                      <YAxis
-                        label={{
-                          value: "Engine Load %",
-                          angle: -90,
-                          position: "insideLeft",
-                        }}
-                      />
-                      <Tooltip />
-                      <Legend />
-                      <Line
-                        type="monotone"
-                        dataKey="EngineLoad"
-                        stroke="#8884d8"
-                        name="Actual Load"
-                      />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </>
-              )}
-            </div>
-          )}
         </div>
       </div>
     </div>
